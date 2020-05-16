@@ -9,13 +9,7 @@ namespace PracaMgrSwagger.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ResonatorType Type { get; set; }
-    }
-
-    public enum ResonatorType
-    {
-        SinglePost = 1,
-        SplitPost = 2,
+        public string Type { get; set; }
     }
 
 }
