@@ -35,10 +35,11 @@ namespace PracaMgrSwagger.Controllers
             => Ok();
 
         [HttpPost("SetConvertSettings")]
-        public IActionResult SetConvertSettings(
-            int SinglePostResonatorId,
-            int SplitPostResonatorId
-            ) 
+        public IActionResult SetConvertSettings(int resonatorId) 
+            => Ok();
+
+        [HttpPost("SetScanSettings")]
+        public IActionResult SetScanSettings(ScanSettings scanSettings)
             => Ok();
     }
 }

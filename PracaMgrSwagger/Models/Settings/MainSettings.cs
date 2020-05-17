@@ -14,6 +14,7 @@ namespace PracaMgrSwagger.Models.Settings
         public string MeasType { get; set; }
         public string Algorithm { get; set; }
         public bool UnloadedQCorrection { get; set; }
+        public bool AutomaticMeasurement { get; set; }
     }
 
 }

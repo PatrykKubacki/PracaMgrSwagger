@@ -20,10 +20,6 @@ namespace PracaMgrSwagger.Controllers
         public ResonatorParameters GetEmptyResonator() 
             => new ResonatorParameters();
 
-        [HttpGet("GetChartData")]
-        public ChartData GetChartData() 
-            => new ChartData();
-
         [HttpGet("GetMeasureResult")]
         public MeasureResult GetMeasureResult()
             => new MeasureResult();

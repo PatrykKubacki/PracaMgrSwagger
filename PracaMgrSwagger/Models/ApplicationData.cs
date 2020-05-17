@@ -8,7 +8,6 @@ namespace PracaMgrSwagger.Models
 {
     public class ApplicationData
     {
-        public ChartData ChartData { get; set; }
         public ResonatorParameters ResonatorParameters { get; set; }
         public AllSettings Settings { get; set; }
     }

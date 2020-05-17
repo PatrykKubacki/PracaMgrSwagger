@@ -7,7 +7,6 @@ namespace PracaMgrSwagger.Models
 {
     public class ConvertSettings
     {
-        public Resonator SinglePost { get; set; }
-        public Resonator SplitPost { get; set; }
+        public Resonator ActiveResonator { get; set; }
     }
 }
