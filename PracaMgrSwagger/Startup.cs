@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PracaMgrSwagger.Hubs;
 
 namespace PracaMgrSwagger
 {
@@ -26,6 +27,7 @@ namespace PracaMgrSwagger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Praca magisterska", Version = "1.0.0" });
@@ -54,6 +56,7 @@ namespace PracaMgrSwagger
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChartHub>("/chartHub");
             });
         }
     }
