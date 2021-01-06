@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PracaMgrSwagger.Models;
+using FakeData = PracaMgrSwagger.FakeDater.FakeData;
 
 namespace PracaMgrSwagger.Controllers
 {
@@ -18,7 +19,7 @@ namespace PracaMgrSwagger.Controllers
 
         [HttpGet("GetEmptyResonator")]
         public ResonatorParameters GetEmptyResonator() 
-            => new ResonatorParameters();
+            => FakeData.GetFakeEmptyResonator();
 
         [HttpGet("GetMeasureResult")]
         public MeasureResult GetMeasureResult()

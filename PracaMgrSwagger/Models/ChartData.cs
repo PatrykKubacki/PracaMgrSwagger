@@ -8,8 +8,9 @@ namespace PracaMgrSwagger.Models
     public class ChartData
     {
         public IEnumerable<Point> Points { get; set; }
-        public decimal StartFrequency { get; set; }
-        public decimal StopFrequency { get; set; }
+        public double StartFrequency { get; set; }
+        public double StopFrequency { get; set; }
         public int PointsOnScreen { get; set; }
+
     }
 }

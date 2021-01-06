@@ -31,7 +31,7 @@ namespace PracaMgrSwagger.Controllers
             => new List<Resonator>();
 
         [HttpPost("AddResonator")]
-        public IActionResult AddResonator(ZipItem item, string type) 
+        public IActionResult AddResonator(string name, string path, string type) 
             => Ok();
 
         [HttpPost("SetConvertSettings")]

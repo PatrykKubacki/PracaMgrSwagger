@@ -7,8 +7,20 @@ namespace PracaMgrSwagger.Models
 {
     public class ResonatorParameters
     {
-        public decimal QFactor { get; set; }
-        public decimal CenterFrequency { get; set; }
-        public decimal PeakTransmittance { get; set; }
+        public double QFactor { get; set; }
+        public double CenterFrequency { get; set; }
+        public double PeakTransmittance { get; set; }
+
+        public ResonatorParameters()
+        {
+
+        }
+
+        public ResonatorParameters(double qFactor, double centerFrequency, double peakTransmittance)
+        {
+            QFactor = qFactor;
+            CenterFrequency = centerFrequency;
+            PeakTransmittance = peakTransmittance;
+        }
     }
 }
