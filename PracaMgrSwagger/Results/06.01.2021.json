@@ -1,0 +1,30 @@
+[
+  {
+    "sampleName": "Duroid 5880",
+    "frequencyDifference": "1183.3",
+    "h": "0.508",
+    "permittivity": "2.254171",
+    "dielLossTangent": "9.6580E-40",
+    "resistivity": "",
+    "sheetResistance": "",
+    "f0": "5123.960",
+    "q": "9789",
+    "bw": "0.5344",
+    "peak": "-33.9",
+    "points": "529"
+  },
+  {
+    "sampleName": "Duroid 5880",
+    "frequencyDifference": "1183.3",
+    "h": "0.508",
+    "permittivity": "2.254171",
+    "dielLossTangent": "9.6580E-40",
+    "resistivity": "",
+    "sheetResistance": "",
+    "f0": "5123.960",
+    "q": "9789",
+    "bw": "0.5344",
+    "peak": "-33.9",
+    "points": "529"
+  }
+]

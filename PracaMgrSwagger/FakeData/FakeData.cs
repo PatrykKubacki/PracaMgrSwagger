@@ -43,8 +43,10 @@ namespace PracaMgrSwagger.FakeDater
 
         public static ChartData GetChartData()
         {
+            var random = new Random();
             var points = new List<Point>();
-            var fileName = "spdr 5 close.csv";
+            //var fileName = "spdr 5 close.csv";
+            var fileName = "spdr 5g wide.csv";
             var path = Path.Combine(Environment.CurrentDirectory, @"Assets\", fileName);
             using (var reader = new StreamReader(path))
             {
@@ -54,8 +56,10 @@ namespace PracaMgrSwagger.FakeDater
                     var values = line.Split(',');
                     var point = new Point
                     {
-                        X = double.Parse(values[0].Replace(".",",")) / 1000000,
-                        Y = double.Parse(values[3].Replace(".", ",")),
+                        //X = double.Parse(values[0].Replace(".",",")) / 1000000,
+                        //Y = double.Parse(values[3].Replace(".", ",")),
+                        X = double.Parse(values[0].Replace(".", ",")) * 1000,
+                        Y = double.Parse(values[1].Replace(".", ",")) + random.NextDouble(),
                     };
 
                     points.Add(point);
