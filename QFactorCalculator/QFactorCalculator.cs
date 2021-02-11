@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DotNetMatrix;
 
-namespace PracaMgrSwagger.QFactorCalculator
+namespace QFactorCalculator
 {
     public class QFactorCalculator
     {

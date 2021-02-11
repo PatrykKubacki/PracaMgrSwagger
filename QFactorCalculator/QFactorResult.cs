@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PracaMgrSwagger.QFactorCalculator
+namespace QFactorCalculator
 {
     public class QFactorResult
     {
@@ -57,8 +57,6 @@ namespace PracaMgrSwagger.QFactorCalculator
             get { return centerFrequency; }
             set { centerFrequency = value; }
         }
-
-
 
         public double Bandwidth
         {

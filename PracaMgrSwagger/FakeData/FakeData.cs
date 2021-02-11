@@ -1,5 +1,5 @@
 ﻿using PracaMgrSwagger.Models;
-using PracaMgrSwagger.QFactorCalculator;
+using QFactorCalculator;
 using System;
 using System.Collections.Generic;
 using System.IO;

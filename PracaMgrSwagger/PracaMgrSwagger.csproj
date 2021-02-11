@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="GeneralMatrix">
-      <HintPath>..\..\..\..\Downloads\QFactor-calculator\QFactor-calculator\GeneralMatrix.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\QFactorCalculator\QFactorCalculator.csproj" />
   </ItemGroup>
 
 

@@ -1,4 +1,4 @@
-﻿using PracaMgrSwagger.QFactorCalculator;
+﻿using QFactorCalculator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
