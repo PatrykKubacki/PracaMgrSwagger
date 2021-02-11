@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -9,6 +9,12 @@
     <PackageReference Include="SigSpec.CodeGeneration" Version="0.1.1" />
     <PackageReference Include="SigSpec.Core" Version="0.1.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="GeneralMatrix">
+      <HintPath>..\..\..\..\Downloads\QFactor-calculator\QFactor-calculator\GeneralMatrix.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 

@@ -31,6 +31,7 @@ namespace PracaMgrSwagger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Praca magisterska", Version = "1.0.0" });
@@ -43,6 +44,7 @@ namespace PracaMgrSwagger
                     .SetIsOriginAllowed((host) => true)));
 
             services.AddSignalR();
+            services.AddSingleton<ChartHubConnections>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime hostApplicationLifetime)
@@ -82,8 +84,16 @@ namespace PracaMgrSwagger
                     Enabled = true
                 };
                 timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e) {
-                    var chart = FakeData.GetChartData();
-                    chartHub.Clients.All.SendAsync("SendChart", chart);
+                    var chartHubConnections = (ChartHubConnections)serviceProvider.GetService(typeof(ChartHubConnections));
+
+                    foreach (var conn in chartHubConnections.Connections)
+                    {
+                        //var chart = FakeData.GetChartData(conn.Value);
+                         var chart = FakeData.GetChartDataFromS2PFile(conn.Value);
+                        chartHub.Clients.Client(conn.Key).SendAsync("SendChart", chart);
+                    }
+
+                    //chartHub.Clients.All.SendAsync("SendChart", chart);
                 };
                 timer.Start();
             });

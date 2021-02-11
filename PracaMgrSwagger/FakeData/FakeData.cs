@@ -1,4 +1,5 @@
 ﻿using PracaMgrSwagger.Models;
+using PracaMgrSwagger.QFactorCalculator;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,76 @@ namespace PracaMgrSwagger.FakeDater
             return result;
         }
 
-        public static ChartData GetChartData()
+        public static ChartData GetChartDataFromS2PFile(ChartHubParameters hubParameters = null)
+        {
+            var random = new Random();
+            var measResultsList = new MeasResultsList();
+            var fileName = "spdr 5g wide.s2p";
+            var path = Path.Combine(Environment.CurrentDirectory, @"Assets\", fileName);
+            measResultsList.readFromS2P(path);
+
+            var qFactorSettings = new QFactorSettings();
+
+            var qFactorCalculator = new QFactorCalculator.QFactorCalculator(measResultsList, qFactorSettings);
+            QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
+
+            var points = measResultsList.getPointList()
+                                        .Select(point => new Point{ X = point.frequency / 1000000, Y = point.gain });
+
+            ChartData result;
+            if (hubParameters != null)
+            {
+                result = new ChartData();
+                if (hubParameters.StartFrequency != 0)
+                {
+                    points = points.SkipWhile(point => point.X <= hubParameters.StartFrequency)
+                                   .ToList();
+
+                    result.StartFrequency = hubParameters.StartFrequency;
+                }
+                else
+                    result.StartFrequency = points.First().X;
+
+                if (hubParameters.StopFrequency != 0)
+                {
+                    points = points.TakeWhile(point => point.X <= hubParameters.StopFrequency)
+                                   .ToList();
+
+                    result.StopFrequency = hubParameters.StopFrequency;
+                }
+                else
+                    result.StopFrequency = points.Last().X;
+
+            }
+            else
+            {
+                result = new ChartData()
+                {
+                    PointsOnScreen = measResultsList.Count,
+                    Points = points,
+                    StartFrequency = Math.Round(points.First().X, 2),
+                    StopFrequency = Math.Round(points.Last().X, 2),
+                    QFactorResult = qFactorResult,
+                };
+            }
+
+            result.PointsOnScreen = points.Count();
+            result.Points = points;
+            result.QFactorResult = qFactorResult;
+
+
+            //result = new ChartData()
+            //{
+            //    PointsOnScreen = measResultsList.Count,
+            //    Points = points,
+            //    StartFrequency = Math.Round(points.First().X,2),
+            //    StopFrequency = Math.Round(points.Last().X, 2),
+            //    QFactorResult = qFactorResult,
+            //};
+            return result;
+        }
+
+        public static ChartData GetChartData(ChartHubParameters hubParameters = null)
         {
             var random = new Random();
             var points = new List<Point>();
@@ -65,14 +135,45 @@ namespace PracaMgrSwagger.FakeDater
                     points.Add(point);
                 }
             }
+            var result = new ChartData();
 
-            var result = new ChartData
+            if (hubParameters != null)
             {
-                StartFrequency = points.First().X,
-                StopFrequency = points.Last().X,
-                PointsOnScreen = points.Count(),
-                Points = points,
-            };
+                if (hubParameters.StartFrequency != 0)
+                {
+                    points = points.SkipWhile(point => point.X <= hubParameters.StartFrequency)
+                                   .ToList();
+
+                    result.StartFrequency = hubParameters.StartFrequency;
+                }
+                else
+                    result.StartFrequency = points.First().X;
+
+                if (hubParameters.StopFrequency != 0)
+                {
+                    points = points.TakeWhile(point => point.X <= hubParameters.StopFrequency)
+                                   .ToList();
+
+                    result.StopFrequency = hubParameters.StopFrequency;
+                }
+                else
+                    result.StopFrequency = points.Last().X;
+            }
+            else
+            {
+                result = new ChartData
+                {
+                    StartFrequency = points.First().X,
+                    StopFrequency = points.Last().X,
+                    PointsOnScreen = points.Count(),
+                    Points = points,
+                };
+            }
+
+            //result.StopFrequency = points.Last().X;
+            result.PointsOnScreen = points.Count();
+            result.Points = points;
+                
 
             return result;
         }
