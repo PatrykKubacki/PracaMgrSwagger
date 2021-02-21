@@ -1,4 +1,5 @@
 ﻿using Converter.Factories;
+using Converter.Managers;
 using Converter.Queries.GetResultFromFile.Results;
 using MediatR;
 using System;
@@ -16,10 +17,11 @@ namespace Converter.Queries.GetResultFromFile
 
         public Task<IResultFromFile> Handle(GetResultFromFileQuery request, CancellationToken cancellationToken)
         {
-            if (!FileWithResultExist(request.ResonatorType, request.ResonatorName))
+            Thread.Sleep(500);
+            if (!FileManager.FileInConverterDirectoryExist(request.ResonatorType, request.ResonatorName, _resultFileName))
                 return null;
 
-            var resultFilePath = $"{GetConverterDictoinaryPath(request.ResonatorType, request.ResonatorName)}\\{_resultFileName}";
+            var resultFilePath = $"{FileManager.GetConverterDirectoryPath(request.ResonatorType, request.ResonatorName)}\\{_resultFileName}";
             string[] resultFromFile = File.ReadAllLines(resultFilePath);
 
             var factory = new ResultFromFileFactory();
@@ -28,19 +30,5 @@ namespace Converter.Queries.GetResultFromFile
             return Task.FromResult(result);
         }
 
-        string GetConverterDictoinaryPath(string resonatorType, string resonatorName)
-        {
-            string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\"));
-            path = Path.Combine(path, $"Converter\\Converters\\{resonatorType}\\{resonatorName}");
-
-            return path;
-        }
-
-        bool FileWithResultExist(string resonatorType, string resonatorName)
-        {
-            string path = $"{GetConverterDictoinaryPath(resonatorType, resonatorName)}\\{_resultFileName}";
-
-            return File.Exists(path);
-        }
     }
 }

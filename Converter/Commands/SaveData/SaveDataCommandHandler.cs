@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Converter.Managers;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,7 @@ namespace Converter.Commands.SaveData
         public Task<Unit> Handle(SaveDataCommand request, CancellationToken cancellationToken)
         {
             StringBuilder builder = GetDataToSave(request);
-            string converterPath = GetConverterPath(request.ResonatorType, request.ResonatorName);
+            string converterPath = FileManager.GetConverterDirectoryPath(request.ResonatorType, request.ResonatorName);
             
             File.WriteAllText($"{converterPath}\\{_dataFileName}", builder.ToString());
 
@@ -31,12 +32,5 @@ namespace Converter.Commands.SaveData
             return builder;
         }
 
-        string GetConverterPath(string resonatorType, string resonatorName)
-        {
-            string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\"));
-            path = Path.Combine(path, $"Converter\\Converters\\{resonatorType}\\{resonatorName}");
-
-            return path;
-        }
     }
 }

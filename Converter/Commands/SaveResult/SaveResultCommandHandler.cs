@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Converter.Managers;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,42 +17,16 @@ namespace Converter.Commands.SaveResult
 
         public Task<Unit> Handle(SaveResultCommand request, CancellationToken cancellationToken)
         {
-            if (!FileWithDataExist(request.ResonatorType, request.ResonatorName))
+            if (!FileManager.FileInConverterDirectoryExist(request.ResonatorType, request.ResonatorName, _dataFileName))
                 return Unit.Task;
 
-            string converterExePath = GetConverterExePath(request.ResonatorType, request.ResonatorName);
+            string converterExePath = FileManager.GetConverterExePath(request.ResonatorType, request.ResonatorName);
             if(string.IsNullOrEmpty(converterExePath))
                 return Unit.Task;
 
             RunConverterProgram(converterExePath);
 
             return Unit.Task;
-        }
-
-        string GetConverterDictoinaryPath(string resonatorType, string resonatorName)
-        {
-            string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, @"..\"));
-            path = Path.Combine(path, $"Converter\\Converters\\{resonatorType}\\{resonatorName}");
-
-            return path;
-        }
-
-        bool FileWithDataExist(string resonatorType, string resonatorName)
-        {
-            string path = $"{GetConverterDictoinaryPath(resonatorType, resonatorName)}\\{_dataFileName}";
-
-            return File.Exists(path);
-        }
-
-        string GetConverterExePath(string resonatorType, string resonatorName)
-        {
-            string path = GetConverterDictoinaryPath(resonatorType, resonatorName);
-            var extensions = new List<string> { "exe" };
-            var exeFile = Directory
-                .EnumerateFiles(path, "*.*", SearchOption.AllDirectories)
-                .Where(s => extensions.Contains(Path.GetExtension(s).TrimStart('.').ToLowerInvariant())).FirstOrDefault();
-
-            return exeFile != null ? Path.GetFullPath(exeFile) : "";
         }
 
         void RunConverterProgram(string path)
