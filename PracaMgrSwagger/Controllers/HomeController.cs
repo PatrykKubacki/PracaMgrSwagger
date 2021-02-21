@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Converter.Commands.SaveData;
+using Converter.Commands.SaveResult;
+using Converter.Queries.GetResultFromFile;
+using Converter.Queries.GetResultFromFile.Results;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PracaMgrSwagger.Models;
@@ -14,11 +19,13 @@ namespace PracaMgrSwagger.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
+        IMediator _mediator;
         ChartHubConnections _chartHubConnections;
-
-        public HomeController(ChartHubConnections hubConnections)
+        
+        public HomeController(ChartHubConnections hubConnections, IMediator mediator)
         {
             _chartHubConnections = hubConnections;
+            _mediator = mediator;
         }
 
         [HttpGet("Initialize")]
@@ -58,6 +65,38 @@ namespace PracaMgrSwagger.Controllers
                 _chartHubConnections.SetStopFrequency(request.connectionId, value);
 
             return Ok();
+        }
+
+        [HttpPost("GetConverterResult")]
+        public async Task<IResultFromFile> GetConverterResult([FromBody] GetConverterResultRequest request)
+        {
+            var saveDataCommand = new SaveDataCommand
+            {
+                CenterFrequency = request.CenterFrequency,
+                H = request.H,
+                QFactor = request.QFactor,
+                ResonatorName = request.ResonatorName,
+                ResonatorType = request.ResonatorType,
+                UnloadedCenterFrequency = request.UnloadedCenterFrequency,
+                UnloadedQ = request.UnloadedQ,
+            };
+            await _mediator.Send(saveDataCommand);
+
+            var saveResultCommand = new SaveResultCommand
+            {
+                ResonatorName = request.ResonatorName,
+                ResonatorType = request.ResonatorType,
+            };
+            await _mediator.Send(saveResultCommand);
+
+            var getResultFromFileQuery = new GetResultFromFileQuery
+            {
+                ResonatorName = request.ResonatorName,
+                ResonatorType = request.ResonatorType,
+            };
+            var result = await _mediator.Send(getResultFromFileQuery);
+
+            return result;
         }
 
     }

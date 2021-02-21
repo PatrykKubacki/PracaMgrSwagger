@@ -5,6 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="9.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="SigSpec.CodeGeneration" Version="0.1.1" />
     <PackageReference Include="SigSpec.Core" Version="0.1.1" />
@@ -12,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Converter\Converter.csproj" />
     <ProjectReference Include="..\QFactorCalculator\QFactorCalculator.csproj" />
   </ItemGroup>
 
