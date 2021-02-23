@@ -40,6 +40,15 @@ namespace PracaMgrSwagger.Controllers
         public MeasureResult GetMeasureResult()
             => new MeasureResult();
 
+        [HttpPost("UnZoomFull")]
+        public IActionResult UnZoomFull([FromBody] UnZoomFullRequest request)
+        {
+            if (_chartHubConnections != null)
+                _chartHubConnections.UnZoomFull(request.connectionId);
+
+            return Ok();
+        }
+
         [HttpPost("SetChartHubConnection")]
         public IActionResult SetChartHubConnection([FromBody] SetChartHubConnectionRequest request)
         {

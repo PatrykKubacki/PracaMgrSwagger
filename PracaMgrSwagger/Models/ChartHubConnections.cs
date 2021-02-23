@@ -38,6 +38,16 @@ namespace PracaMgrSwagger.Models
                 (!Connections.Any() || Connections.Any(x => x.Key != connectionId)) )
                 Connections.Add(connectionId, new ChartHubParameters());
         }
+
+        public void UnZoomFull(string connectionId)
+        {
+            if (Connections != null)
+                if (Connections.Any(x => x.Key == connectionId))
+                {
+                    Connections[connectionId].StartFrequency = 0;
+                    Connections[connectionId].StopFrequency = 0;
+                }
+        }
     }
 
     public class ChartHubParameters
