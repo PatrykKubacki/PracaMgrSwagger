@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PracaMgrSwagger.Models;
 using PracaMgrSwagger.Models.Requests;
-using FakeData = PracaMgrSwagger.FakeDater.FakeData;
+using FakeDatas = PracaMgrSwagger.FakeDater.FakeData;
 
 namespace PracaMgrSwagger.Controllers
 {
@@ -34,7 +34,7 @@ namespace PracaMgrSwagger.Controllers
 
         [HttpGet("GetEmptyResonator")]
         public ResonatorParameters GetEmptyResonator() 
-            => FakeData.GetFakeEmptyResonator();
+            => FakeDatas.GetFakeEmptyResonator();
 
         [HttpGet("GetMeasureResult")]
         public MeasureResult GetMeasureResult()
@@ -72,6 +72,15 @@ namespace PracaMgrSwagger.Controllers
         {
             if (_chartHubConnections != null && double.TryParse(request.value, out double value))
                 _chartHubConnections.SetStopFrequency(request.connectionId, value);
+
+            return Ok();
+        }
+
+        [HttpPost("SetPointsOnScreen")]
+        public IActionResult SetPointsOnScreen([FromBody] SetPointsOnScreenRequest request)
+        {
+            if (_chartHubConnections != null && int.TryParse(request.value, out int value))
+                _chartHubConnections.SetPointsOnScreen(request.connectionId, value);
 
             return Ok();
         }

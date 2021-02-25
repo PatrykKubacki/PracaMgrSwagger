@@ -15,9 +15,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.VisualBasic;
+using PracaMgrSwagger.FakeData;
 using PracaMgrSwagger.Hubs;
 using PracaMgrSwagger.Models;
-using FakeData = PracaMgrSwagger.FakeDater.FakeData;
+using FakeDatas = PracaMgrSwagger.FakeDater.FakeData;
 
 namespace PracaMgrSwagger
 {
@@ -47,6 +48,7 @@ namespace PracaMgrSwagger
 
             services.AddSignalR();
             services.AddSingleton<ChartHubConnections>();
+            services.AddSingleton<DataSourceFromFiles>();
             services.AddMediatR(AssemblyInfo.Assembly);
         }
 
@@ -88,11 +90,12 @@ namespace PracaMgrSwagger
                 };
                 timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e) {
                     var chartHubConnections = (ChartHubConnections)serviceProvider.GetService(typeof(ChartHubConnections));
+                    var dataSourceFromFiles = (DataSourceFromFiles)serviceProvider.GetService(typeof(DataSourceFromFiles));
 
                     foreach (var conn in chartHubConnections.Connections)
                     {
                         //var chart = FakeData.GetChartData(conn.Value);
-                         var chart = FakeData.GetChartDataFromS2PFile(conn.Value);
+                         var chart = FakeDatas.GetChartDataFromS2PFile(dataSourceFromFiles, conn.Value);
                         chartHub.Clients.Client(conn.Key).SendAsync("SendChart", chart);
                     }
 

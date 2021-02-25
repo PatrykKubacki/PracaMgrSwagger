@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FakeData = PracaMgrSwagger.FakeDater.FakeData;
+using FakeDatas = PracaMgrSwagger.FakeDater.FakeData;
 
 namespace PracaMgrSwagger.Hubs
 {
@@ -17,7 +17,7 @@ namespace PracaMgrSwagger.Hubs
     {
         public async Task SendChart()
         {
-            var chart = FakeData.GetChartData();
+            var chart = FakeDatas.GetChartData();
 
             await Clients.All.SendChart("SendChart", chart);
         }

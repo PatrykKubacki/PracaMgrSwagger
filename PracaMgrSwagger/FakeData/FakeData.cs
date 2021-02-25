@@ -1,4 +1,5 @@
-﻿using PracaMgrSwagger.Models;
+﻿using PracaMgrSwagger.FakeData;
+using PracaMgrSwagger.Models;
 using QFactorCalculator;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace PracaMgrSwagger.FakeDater
 {
     static public class FakeData
     {
+        //DataSourceFromFiles _dataSourceFromFiles { get; set; }
+
         public static ResonatorParameters GetFakeEmptyResonator()
         {
             var random = new Random();
@@ -42,21 +45,20 @@ namespace PracaMgrSwagger.FakeDater
             return result;
         }
 
-        public static ChartData GetChartDataFromS2PFile(ChartHubParameters hubParameters = null)
+        public static ChartData GetChartDataFromS2PFile(DataSourceFromFiles dataSourceFromFiles, ChartHubParameters hubParameters = null)
         {
             var random = new Random();
-            var measResultsList = new MeasResultsList();
-            var fileName = "spdr 5g wide.s2p";
-            var path = Path.Combine(Environment.CurrentDirectory, @"Assets\", fileName);
-            measResultsList.readFromS2P(path);
-
             var qFactorSettings = new QFactorSettings();
+            var measResultsList = dataSourceFromFiles.GetMeasResultsList(hubParameters);
+            //var pointList = measResultsList.getPointList();
+
+            //pointList.ForEach(x => x.gain += random.NextDouble());
+            //measResultsList = new MeasResultsList(pointList);
 
             var qFactorCalculator = new QFactorCalculator.QFactorCalculator(measResultsList, qFactorSettings);
             QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
-
             var points = measResultsList.getPointList()
-                                        .Select(point => new Point{ X = point.frequency / 1000000, Y = point.gain });
+                                        .Select(point => new Point{ X = point.frequency/1000000, Y = point.gain });
 
             ChartData result;
             if (hubParameters != null)
@@ -82,6 +84,23 @@ namespace PracaMgrSwagger.FakeDater
                 else
                     result.StopFrequency = points.Last().X;
 
+
+                var pointsCount = points.Count();
+                if (hubParameters.PointsOnScreen != 0 && hubParameters.PointsOnScreen < pointsCount)
+                {
+                    var pointToCutCount = pointsCount - hubParameters.PointsOnScreen;
+                    var skipEvery = Math.Round((double)pointsCount / (double)pointToCutCount);
+
+                    points = skipEvery > 1
+                        ? points.SkipWhile((point, index) => index % skipEvery == 0)
+                                .ToList()
+                        : GetFilteredPoints(points, pointToCutCount);
+
+
+                    result.PointsOnScreen = hubParameters.PointsOnScreen;
+                }
+                else
+                    result.PointsOnScreen = points.Count();
             }
             else
             {
@@ -95,7 +114,7 @@ namespace PracaMgrSwagger.FakeDater
                 };
             }
 
-            result.PointsOnScreen = points.Count();
+            //result.PointsOnScreen = points.Count();
             result.Points = points;
             result.QFactorResult = qFactorResult;
 
@@ -108,6 +127,21 @@ namespace PracaMgrSwagger.FakeDater
             //    StopFrequency = Math.Round(points.Last().X, 2),
             //    QFactorResult = qFactorResult,
             //};
+            return result;
+        }
+
+        static List<Point> GetFilteredPoints(IEnumerable<Point> points, int howManyCut)
+        {
+            var result = points.ToList();
+
+            while(howManyCut > 0)
+            {
+                var totalPoints = result.Count();
+                var cuted = totalPoints / 2;
+                result = result.Where((p, index) => index % 2 == 0).ToList();
+                howManyCut -= cuted;
+            }
+
             return result;
         }
 

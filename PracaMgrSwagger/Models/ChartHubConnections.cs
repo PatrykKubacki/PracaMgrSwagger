@@ -32,6 +32,15 @@ namespace PracaMgrSwagger.Models
                     Connections.Add(connectionId, new ChartHubParameters { StopFrequency = value });
         }
 
+        public void SetPointsOnScreen(string connectionId, int value)
+        {
+            if (Connections != null)
+                if (Connections.Any(x => x.Key == connectionId))
+                    Connections[connectionId].PointsOnScreen = value;
+                else
+                    Connections.Add(connectionId, new ChartHubParameters { PointsOnScreen = value });
+        }
+
         public void SetChartHubConnection(string connectionId)
         {
             if (Connections != null &&
@@ -46,6 +55,7 @@ namespace PracaMgrSwagger.Models
                 {
                     Connections[connectionId].StartFrequency = 0;
                     Connections[connectionId].StopFrequency = 0;
+                    Connections[connectionId].PointsOnScreen = 0;
                 }
         }
     }

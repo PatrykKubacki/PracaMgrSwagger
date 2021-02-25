@@ -16,7 +16,7 @@ namespace QFactorCalculator
             double frequency;
             double sparam;
             var random = new Random();
-            
+
             Console.WriteLine("Reading file: " + filename);
 
             string[] lines = System.IO.File.ReadAllLines(filename);
@@ -28,7 +28,7 @@ namespace QFactorCalculator
                 string[] values = line.Split(' ');
                 double.TryParse(values[0].Replace(".", ","), out frequency);
                 sparam = double.Parse(values[3], CultureInfo.InvariantCulture);
-                s21module.Add(new PointPair(frequency, (20 * Math.Log10(sparam))+ random.NextDouble()));
+                s21module.Add(new PointPair(frequency, (20 * Math.Log10(sparam)) + random.NextDouble()));
             }
             Console.WriteLine("Number of datapoints: " + s21module.Count.ToString());
         }
