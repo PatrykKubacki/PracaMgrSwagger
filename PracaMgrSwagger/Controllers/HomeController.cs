@@ -85,6 +85,16 @@ namespace PracaMgrSwagger.Controllers
             return Ok();
         }
 
+        [HttpPost("SetStartStopRangeFrequency")]
+        public IActionResult SetStartStopRangeFrequency([FromBody] SetStartStopRangeFrequencyRequest request)
+        {
+            if (_chartHubConnections != null && double.TryParse(request.start, out double start) && double.TryParse(request.stop, out double stop))
+                _chartHubConnections.SetStartStopFrequency(request.connectionId, start, stop);
+
+            return Ok();
+        }
+
+
         [HttpPost("GetConverterResult")]
         public async Task<IResultFromFile> GetConverterResult([FromBody] GetConverterResultRequest request)
         {

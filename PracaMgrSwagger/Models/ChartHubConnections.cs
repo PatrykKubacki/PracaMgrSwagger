@@ -32,6 +32,18 @@ namespace PracaMgrSwagger.Models
                     Connections.Add(connectionId, new ChartHubParameters { StopFrequency = value });
         }
 
+        public void SetStartStopFrequency(string connectionId, double start, double stop)
+        {
+            if (Connections != null)
+                if (Connections.Any(x => x.Key == connectionId))
+                {
+                    Connections[connectionId].StartFrequency = Math.Round(start);
+                    Connections[connectionId].StopFrequency = Math.Round(stop);
+                }
+            else
+                Connections.Add(connectionId, new ChartHubParameters { StartFrequency = start, StopFrequency = stop });
+        }
+
         public void SetPointsOnScreen(string connectionId, int value)
         {
             if (Connections != null)
