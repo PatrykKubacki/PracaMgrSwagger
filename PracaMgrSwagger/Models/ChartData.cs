@@ -13,6 +13,13 @@ namespace PracaMgrSwagger.Models
         public double StopFrequency { get; set; }
         public int PointsOnScreen { get; set; }
         public QFactorResult QFactorResult { get; set; }
+        public IEnumerable<Maximum> Maximums { get; set; }
 
+    }
+
+    public class Maximum
+    {
+        public double Frequency { get; set; }
+        public double Value { get; set; }
     }
 }

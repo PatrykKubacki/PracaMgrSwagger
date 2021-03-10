@@ -5,10 +5,18 @@ using System.Threading.Tasks;
 
 namespace PracaMgrSwagger.Models
 {
-    public class Point
+    public class Point: IComparable
     {
         public double X { get; set; }
         public double Y { get; set; }
 
+        public int CompareTo(object obj)
+        {
+            var anotherPoint = (Point)obj;
+            if (Y> anotherPoint.Y)
+                return 1;
+
+            return Y < anotherPoint.Y ? -1 : 0;
+        }
     }
 }

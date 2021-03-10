@@ -1,4 +1,5 @@
 ﻿using PracaMgrSwagger.FakeData;
+using PracaMgrSwagger.MaximumFinder;
 using PracaMgrSwagger.Models;
 using QFactorCalculator;
 using System;
@@ -118,7 +119,7 @@ namespace PracaMgrSwagger.FakeDater
             result.Points = points;
             result.QFactorResult = qFactorResult;
 
-
+            result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
             //{
             //    PointsOnScreen = measResultsList.Count,
@@ -207,7 +208,6 @@ namespace PracaMgrSwagger.FakeDater
             //result.StopFrequency = points.Last().X;
             result.PointsOnScreen = points.Count();
             result.Points = points;
-                
 
             return result;
         }
