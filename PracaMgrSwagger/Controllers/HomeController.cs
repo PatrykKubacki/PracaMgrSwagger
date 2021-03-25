@@ -94,6 +94,15 @@ namespace PracaMgrSwagger.Controllers
             return Ok();
         }
 
+        [HttpPost("PutOnOfObject")]
+        public IActionResult PutOnOfObject([FromBody] PutOnOfObjectRequest request)
+        {
+            if (_chartHubConnections != null)
+                _chartHubConnections.SetIsObjectInside(request.connectionId, request.IsObjectInside);
+
+            return Ok();
+        }
+
 
         [HttpPost("GetConverterResult")]
         public async Task<IResultFromFile> GetConverterResult([FromBody] GetConverterResultRequest request)

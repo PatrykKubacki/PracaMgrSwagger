@@ -18,5 +18,8 @@ namespace PracaMgrSwagger.Models
 
             return Y < anotherPoint.Y ? -1 : 0;
         }
+
+        public override string ToString()
+            => $"X: {X} Y:{Y}";
     }
 }

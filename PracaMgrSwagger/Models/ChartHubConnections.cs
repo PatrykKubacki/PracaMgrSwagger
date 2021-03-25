@@ -61,6 +61,15 @@ namespace PracaMgrSwagger.Models
                 Connections.Add(connectionId, new ChartHubParameters());
         }
 
+        public void SetIsObjectInside(string connectionId, bool value)
+        {
+            if (Connections != null)
+                if (Connections.Any(x => x.Key == connectionId))
+                    Connections[connectionId].IsObjectInside = value;
+                else
+                    Connections.Add(connectionId, new ChartHubParameters { IsObjectInside = value });
+        }
+
         public void UnZoomFull(string connectionId)
         {
             if (Connections != null)
@@ -78,5 +87,7 @@ namespace PracaMgrSwagger.Models
         public double StartFrequency { get; set; }
         public double StopFrequency { get; set; }
         public int PointsOnScreen { get; set; }
+        public bool IsObjectInside { get; set; }
+        public int Step { get; set; }
     }
 }

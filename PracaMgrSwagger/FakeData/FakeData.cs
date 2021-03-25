@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PracaMgrSwagger.FakeDater
@@ -102,6 +103,29 @@ namespace PracaMgrSwagger.FakeDater
                 }
                 else
                     result.PointsOnScreen = points.Count();
+
+                result.Maximums = FindMaximum.GetMaximumGroups(points);
+
+                if (hubParameters.IsObjectInside)
+                {
+                    if (hubParameters.Step != 5)
+                    {
+                         Thread.Sleep(100);
+                         points = FindMaximum.GetSmoothChart(points, hubParameters);
+                         hubParameters.Step++;
+                    } 
+                    else
+                        points = FindMaximum.GetSmoothChart(points, hubParameters);
+                }
+                else
+                {
+                    if (hubParameters.Step != 0)
+                    {
+                        Thread.Sleep(100);
+                        points = FindMaximum.GetSmoothChart(points, hubParameters);
+                        hubParameters.Step--;
+                    }
+                }
             }
             else
             {
@@ -119,7 +143,7 @@ namespace PracaMgrSwagger.FakeDater
             result.Points = points;
             result.QFactorResult = qFactorResult;
 
-            result.Maximums = FindMaximum.GetMaximumGroups(points);
+            //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
             //{
             //    PointsOnScreen = measResultsList.Count,
