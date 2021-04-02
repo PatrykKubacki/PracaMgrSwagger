@@ -142,6 +142,7 @@ namespace PracaMgrSwagger.FakeDater
             //result.PointsOnScreen = points.Count();
             result.Points = points;
             result.QFactorResult = qFactorResult;
+            result.LorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult);
 
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()

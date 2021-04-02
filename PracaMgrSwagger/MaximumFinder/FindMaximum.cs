@@ -1,4 +1,5 @@
 ﻿using PracaMgrSwagger.Models;
+using QFactorCalculator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,22 @@ namespace PracaMgrSwagger.MaximumFinder
                     templist = new List<Point>();
                 }
             }
+
+            return result;
+        }
+
+        static public List<Point> GetLorenzeCureve(IEnumerable<Point> points, QFactorResult qFactorResult)
+        {
+            var result = new List<Point>();
+            foreach (var point in points)
+            {
+                var y = QFactorCalculator.QFactorCalculator.CalcLorenzeCurve(
+                    point.Y,
+                    point.X,
+                    qFactorResult);
+
+                result.Add(new Point { X = point.X, Y = y });
+            };
 
             return result;
         }

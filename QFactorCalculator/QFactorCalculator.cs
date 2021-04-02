@@ -75,8 +75,6 @@ namespace QFactorCalculator
             return qfr;
         }
 
- 
-
         private QFactorResult calculateLeastSquareLorenz()
         {
             int i, j=0;
@@ -128,9 +126,15 @@ namespace QFactorCalculator
             return new QFactorResult(Q, F0, P0, F0 / Q, n);
         }
 
-
-
-
+        // k-  10^ ((s21)peek transmitance / 20) ew przez 10
+        static public double CalcLorenzeCurve(double s21, double f, QFactorResult qFactorResult)
+        {
+            var k = Math.Pow(10, s21 * qFactorResult.PeakTransmittance / 20);
+            var result = k / Math.Sqrt(1 + qFactorResult.Q_factor * qFactorResult.Q_factor * Math.Pow((f / qFactorResult.CenterFrequency - qFactorResult.CenterFrequency / f), 2));
+            //result /= 1000_000_000;
+            //return double.Parse(result.ToString().Replace(".", ","), System.Globalization.NumberStyles.Float);
+            return result;
+        }
 
         // Calculates value of Lorenz curve at given frequency in linear value
         // f, f0 [MHz]
