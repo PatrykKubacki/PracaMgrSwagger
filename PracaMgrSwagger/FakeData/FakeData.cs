@@ -49,83 +49,62 @@ namespace PracaMgrSwagger.FakeDater
 
         public static ChartData GetChartDataFromS2PFile(DataSourceFromFiles dataSourceFromFiles, ChartHubParameters hubParameters = null)
         {
-            var random = new Random();
-            var qFactorSettings = new QFactorSettings();
             var measResultsList = dataSourceFromFiles.GetMeasResultsList(hubParameters);
-            //var pointList = measResultsList.getPointList();
 
-            //pointList.ForEach(x => x.gain += random.NextDouble());
-            //measResultsList = new MeasResultsList(pointList);
-
-            var qFactorCalculator = new QFactorCalculator.QFactorCalculator(measResultsList, qFactorSettings);
-            QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
-            var points = measResultsList.getPointList()
-                                        .Select(point => new Point{ X = point.frequency/1000000, Y = point.gain });
-
-            ChartData result;
-            if (hubParameters != null)
+            if(hubParameters != null)
             {
-                result = new ChartData();
-                if (hubParameters.StartFrequency != 0)
-                {
-                    points = points.SkipWhile(point => point.X <= hubParameters.StartFrequency)
-                                   .ToList();
-
-                    result.StartFrequency = hubParameters.StartFrequency;
-                }
-                else
-                    result.StartFrequency = points.First().X;
-
-                if (hubParameters.StopFrequency != 0)
-                {
-                    points = points.TakeWhile(point => point.X <= hubParameters.StopFrequency)
-                                   .ToList();
-
-                    result.StopFrequency = hubParameters.StopFrequency;
-                }
-                else
-                    result.StopFrequency = points.Last().X;
-
-
-                var pointsCount = points.Count();
-                if (hubParameters.PointsOnScreen != 0 && hubParameters.PointsOnScreen < pointsCount)
-                {
-                    var pointToCutCount = pointsCount - hubParameters.PointsOnScreen;
-                    var skipEvery = Math.Round((double)pointsCount / (double)pointToCutCount);
-
-                    points = skipEvery > 1
-                        ? points.SkipWhile((point, index) => index % skipEvery == 0)
-                                .ToList()
-                        : GetFilteredPoints(points, pointToCutCount);
-
-
-                    result.PointsOnScreen = hubParameters.PointsOnScreen;
-                }
-                else
-                    result.PointsOnScreen = points.Count();
-
-                result.Maximums = FindMaximum.GetMaximumGroups(points);
-
                 if (hubParameters.IsObjectInside)
                 {
                     if (hubParameters.Step != 5)
                     {
-                         Thread.Sleep(100);
-                         points = FindMaximum.GetSmoothChart(points, hubParameters);
-                         hubParameters.Step++;
-                    } 
+                        Thread.Sleep(100);
+                        measResultsList.TransformPointList(hubParameters.Step);
+                        hubParameters.Step++;
+                    }
                     else
-                        points = FindMaximum.GetSmoothChart(points, hubParameters);
+                        measResultsList.TransformPointList(hubParameters.Step);
                 }
                 else
                 {
                     if (hubParameters.Step != 0)
                     {
                         Thread.Sleep(100);
-                        points = FindMaximum.GetSmoothChart(points, hubParameters);
+                        measResultsList.TransformPointList(hubParameters.Step);
                         hubParameters.Step--;
                     }
                 }
+            }
+
+            QFactorSettings qFactorSettings = new();
+            var qFactorCalculator = new QFactorCalculator.QFactorCalculator(measResultsList, qFactorSettings);
+            QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
+            var points = measResultsList.getPointList()
+                                        .Select(point => new Point{ X = point.frequency/1_000_000, Y = point.gain });
+
+            ChartData result;
+            if (hubParameters != null)
+            {
+                var startFrequency = hubParameters.StartFrequency != 0
+                    ? hubParameters.StartFrequency
+                    : Math.Round(points.First().X, 2);
+
+                var stopFrequency = hubParameters.StopFrequency != 0
+                    ? hubParameters.StopFrequency
+                    : Math.Round(points.Last().X, 2);
+
+                var pointsCount = points.Count();
+                var pointsOnScreen = hubParameters.PointsOnScreen != 0 && hubParameters.PointsOnScreen < pointsCount
+                    ? hubParameters.PointsOnScreen
+                    : pointsCount;
+
+                result = new ChartData()
+                {
+                    StartFrequency = startFrequency,
+                    StopFrequency = stopFrequency,
+                    Points = points,
+                    QFactorResult = qFactorResult,
+                    PointsOnScreen = pointsOnScreen,
+                };
             }
             else
             {
@@ -140,8 +119,9 @@ namespace PracaMgrSwagger.FakeDater
             }
 
             //result.PointsOnScreen = points.Count();
-            result.Points = points;
-            result.QFactorResult = qFactorResult;
+            //result.Points = points;
+            //result.QFactorResult = qFactorResult;
+            result.Maximums = FindMaximum.GetMaximumGroups(points);
             result.LorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult);
 
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
@@ -156,20 +136,6 @@ namespace PracaMgrSwagger.FakeDater
             return result;
         }
 
-        static List<Point> GetFilteredPoints(IEnumerable<Point> points, int howManyCut)
-        {
-            var result = points.ToList();
-
-            while(howManyCut > 0)
-            {
-                var totalPoints = result.Count();
-                var cuted = totalPoints / 2;
-                result = result.Where((p, index) => index % 2 == 0).ToList();
-                howManyCut -= cuted;
-            }
-
-            return result;
-        }
 
         public static ChartData GetChartData(ChartHubParameters hubParameters = null)
         {

@@ -14,6 +14,7 @@ namespace QFactorCalculator
         private int nextResultIdx;
         private string dataType = "#";  // used by QFactorAccuracyTest
 
+        const int _limitParameter = -75;
         const int AVERAGE_STEP_N = 10;  // number of points to calculate average frequency step between points
 
 
@@ -28,6 +29,101 @@ namespace QFactorCalculator
             SimpleS2pReader ssr = new SimpleS2pReader();
             ssr.readFile(filename);
             pointList = ssr.getS21Module();
+        }
+
+        public void FilterPointList(double start, double stop)
+        {
+            IEnumerable<PointPair> filteredPointList = start == 0 
+                ? pointList 
+                : pointList.SkipWhile(point => point.frequency <= start);
+
+            filteredPointList = stop == 0 
+                ? filteredPointList 
+                : filteredPointList.TakeWhile(point => point.frequency <= stop);
+
+            pointList = filteredPointList.ToList();
+
+        }
+
+        public void TransformPointList(int step)
+        {
+            var pointsOverLimit = SplitPoint(pointList);
+            if (!pointsOverLimit.Any())
+                return ;
+
+            var firstPointOverLimit = pointsOverLimit.FirstOrDefault().FirstOrDefault();
+            var indexOf = pointList.ToList().IndexOf(firstPointOverLimit);
+            foreach (var groupOfPoint in pointsOverLimit)
+            {
+                foreach (var point in groupOfPoint)
+                {
+                    double k = step;
+                    var value = step == 0
+                        ? point.gain
+                        : (point.gain / k) - 74d + (74 / k);
+                    point.gain = value;
+                    point.frequency -= k;
+                }
+            }
+
+            var result = pointList.ToList();
+            for (int i = (indexOf + 250); i > 0; i--)
+                if (i <= pointList.Count() && pointList.ToArray()[i].frequency >= pointList.ToArray()[indexOf].frequency)
+                    result.RemoveAt(i);
+
+            pointList = result;
+        }
+
+        private List<List<PointPair>> SplitPoint(List<PointPair> pointList)
+        {
+            var result = new List<List<PointPair>>();
+            var templist = new List<PointPair>();
+            foreach (var point in pointList)
+            {
+                if (point.gain > _limitParameter)
+                {
+                    templist.Add(point);
+                    if (point.frequency == pointList.Last().frequency)
+                        result.Add(templist);
+                }
+                else if (templist.Any())
+                {
+                    result.Add(templist);
+                    templist = new List<PointPair>();
+                }
+            }
+
+            return result;
+        }
+
+        public void CutPoints(int pointsOnScreen)
+        {
+            var pointsCount = pointList.Count();
+            if (pointsOnScreen != 0 && pointsOnScreen < pointsCount)
+            {
+                var pointToCutCount = pointsCount - pointsOnScreen;
+                var skipEvery = Math.Round((double)pointsCount / (double)pointToCutCount);
+
+                pointList = skipEvery > 1
+                        ? pointList.SkipWhile((point, index) => index % skipEvery == 0)
+                                   .ToList()
+                        : GetFilteredPoints(pointList, pointToCutCount);
+            }
+        }
+
+        private List<PointPair> GetFilteredPoints(List<PointPair> pointList, int howManyCut)
+        {
+            var result = pointList.ToList();
+
+            while (howManyCut > 0)
+            {
+                var totalPoints = result.Count();
+                var cuted = totalPoints / 2;
+                result = result.Where((p, index) => index % 2 == 0).ToList();
+                howManyCut -= cuted;
+            }
+
+            return result;
         }
 
         public List<PointPair> getPointList()

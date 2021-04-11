@@ -11,37 +11,6 @@ namespace PracaMgrSwagger.MaximumFinder
     {
         static readonly int _limitParameter = -75;
 
-        static public IEnumerable<Point> GetSmoothChart(IEnumerable<Point> points, ChartHubParameters hubParameters)
-        {
-            if(hubParameters == null)
-                return points;
-
-            var pointsOverLimit = SplitPoint(points);
-            if (!pointsOverLimit.Any())
-                return points;
-
-            var firstPointOverLimit = pointsOverLimit.FirstOrDefault().FirstOrDefault();
-            var indexOf = points.ToList().IndexOf(firstPointOverLimit);
-            foreach (var groupOfPoint in pointsOverLimit)
-            {
-                foreach (var point in groupOfPoint)
-                {
-                    double k =  hubParameters.Step;
-                    var value = hubParameters.Step == 0 
-                        ? point.Y 
-                        : (point.Y / k) -74d +(74 / k);
-                    point.Y = value;
-                    point.X -= k;
-                }
-            }
-            var result = points.ToList();
-            for (int i = (indexOf + 250); i > 0; i--)
-                if (i<= points.Count() && points.ToArray()[i].X >= points.ToArray()[indexOf].X)
-                    result.RemoveAt(i);
-
-            return result;
-        }
-
         static public IEnumerable<Maximum> GetMaximumGroups(IEnumerable<Point> points)
         {
             var result = new List<Maximum>();
@@ -76,6 +45,7 @@ namespace PracaMgrSwagger.MaximumFinder
             return result;
         }
 
+
         static public List<Point> GetLorenzeCureve(IEnumerable<Point> points, QFactorResult qFactorResult)
         {
             var result = new List<Point>();
@@ -88,6 +58,18 @@ namespace PracaMgrSwagger.MaximumFinder
 
                 result.Add(new Point { X = point.X, Y = y });
             };
+
+            result = FilterLorenzeCurve(result);
+
+            return result;
+        }
+
+        static List<Point> FilterLorenzeCurve(IEnumerable<Point> points)
+        {
+            var max = points.Max();
+            var result = points.SkipWhile(x => x.X <= (max.X - 10))
+                               .TakeWhile(x => x.X <= (max.X + 10))
+                               .ToList();
 
             return result;
         }

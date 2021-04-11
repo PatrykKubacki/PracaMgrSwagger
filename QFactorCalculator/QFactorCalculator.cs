@@ -129,10 +129,18 @@ namespace QFactorCalculator
         // k-  10^ ((s21)peek transmitance / 20) ew przez 10
         static public double CalcLorenzeCurve(double s21, double f, QFactorResult qFactorResult)
         {
-            var k = Math.Pow(10, s21 * qFactorResult.PeakTransmittance / 20);
-            var result = k / Math.Sqrt(1 + qFactorResult.Q_factor * qFactorResult.Q_factor * Math.Pow((f / qFactorResult.CenterFrequency - qFactorResult.CenterFrequency / f), 2));
-            //result /= 1000_000_000;
-            //return double.Parse(result.ToString().Replace(".", ","), System.Globalization.NumberStyles.Float);
+            var k = Math.Pow(10, qFactorResult.PeakTransmittance / 20);
+
+            var f0 = qFactorResult.CenterFrequency / 1_000_000;
+
+            var z = Math.Pow((f / f0 - f0 / f), 2);
+
+            var c = Math.Sqrt(1 + qFactorResult.Q_factor * qFactorResult.Q_factor * z);
+
+            var result = k / c;
+
+            result = Math.Log10(result ) * 20;
+
             return result;
         }
 

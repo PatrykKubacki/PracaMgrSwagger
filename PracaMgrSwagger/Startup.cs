@@ -46,7 +46,9 @@ namespace PracaMgrSwagger
                     .AllowCredentials()
                     .SetIsOriginAllowed((host) => true)));
 
-            services.AddSignalR();
+            services.AddSignalR(hubOptions => {
+                hubOptions.EnableDetailedErrors = true;
+            });
             services.AddSingleton<ChartHubConnections>();
             services.AddSingleton<DataSourceFromFiles>();
             services.AddMediatR(AssemblyInfo.Assembly);
