@@ -126,6 +126,9 @@ namespace QFactorCalculator
             return result;
         }
 
+        public IEnumerable<PointPair> GetPointsInRange(double start, double stop)
+            => pointList.Where(x => x.frequency >= start && x.frequency <= stop);
+
         public List<PointPair> getPointList()
         {
             return pointList;

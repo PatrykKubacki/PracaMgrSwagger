@@ -23,6 +23,7 @@ namespace PracaMgrSwagger.FakeDater
             var peakTransmittance = random.Next(-40, -33);
             return new ResonatorParameters(qFactor, centerFrequency, peakTransmittance);
         }
+
         public static ChartData GetFakeChartData()
         {
             var random = new Random();
@@ -124,6 +125,9 @@ namespace PracaMgrSwagger.FakeDater
             result.Maximums = FindMaximum.GetMaximumGroups(points);
             result.LorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult);
 
+            result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
+            result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
+
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
             //{
@@ -133,6 +137,48 @@ namespace PracaMgrSwagger.FakeDater
             //    StopFrequency = Math.Round(points.Last().X, 2),
             //    QFactorResult = qFactorResult,
             //};
+            return result;
+        }
+
+        static IEnumerable<QFactorResult> GetQFactorResults(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> points)
+        { 
+            QFactorSettings qFactorSettings = new();
+            List<QFactorResult> result = new();
+
+            IEnumerable<MeasResultsList> measResultsLists = ConvertToMeasResultsLists(measResultsList, points);
+            if (measResultsLists == null)
+                return result;
+
+            foreach (var newMeasResultsList in measResultsLists)
+            {
+                if (newMeasResultsList.Count <= 3)
+                    continue;
+
+                var qFactorCalculator = new QFactorCalculator.QFactorCalculator(newMeasResultsList, qFactorSettings);
+                QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
+                result.Add(qFactorResult);
+            }
+
+            return result;
+        }
+
+        static IEnumerable<MeasResultsList> ConvertToMeasResultsLists(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> groupOfPoints)
+        {
+            List<MeasResultsList> result = new();
+            foreach (var group in groupOfPoints)
+            {
+                if (group.Count() <= 3)
+                    continue;
+
+                var measPointList = measResultsList.GetPointsInRange(group.First().X * 1_000_000, group.Last().X * 1_000_000).ToList();
+                MeasResultsList newMeasResultsList = new();
+
+                foreach (var point in measPointList)
+                    newMeasResultsList.addFreqPower(point.frequency, point.gain);
+
+                result.Add(newMeasResultsList);
+            }
+
             return result;
         }
 
