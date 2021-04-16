@@ -123,10 +123,10 @@ namespace PracaMgrSwagger.FakeDater
             //result.Points = points;
             //result.QFactorResult = qFactorResult;
             result.Maximums = FindMaximum.GetMaximumGroups(points);
-            result.LorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult);
 
             result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
+            result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
 
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
@@ -157,6 +157,35 @@ namespace PracaMgrSwagger.FakeDater
                 var qFactorCalculator = new QFactorCalculator.QFactorCalculator(newMeasResultsList, qFactorSettings);
                 QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
                 result.Add(qFactorResult);
+            }
+
+            return result;
+        }
+
+        static IEnumerable<IEnumerable<Point>> GetLorenzeCurves(IEnumerable<IEnumerable<Point>> groupOfPoints, IEnumerable<QFactorResult> qFactorResults)
+        {
+            List<List<Point>> result = new();
+
+            if (!groupOfPoints.Any() || !qFactorResults.Any())
+                return result;
+
+            int countGroupOfPoints = groupOfPoints.Count();
+            int countQFactorResults = qFactorResults.Count();
+            var countOfLorenze = countGroupOfPoints == countQFactorResults
+                ? countGroupOfPoints
+                : countQFactorResults;
+
+            if (countOfLorenze > 10)
+                return result;
+
+            for (int i = 0; i <= (countOfLorenze - 1); i++)
+            {
+                IEnumerable<Point> points = groupOfPoints.ToArray()[i];
+                QFactorResult qFactorResult = qFactorResults.ToArray()[i];
+
+                List<Point> lorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult).ToList();
+
+                result.Add(lorenzeCurve);
             }
 
             return result;

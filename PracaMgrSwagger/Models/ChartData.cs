@@ -15,7 +15,6 @@ namespace PracaMgrSwagger.Models
         public QFactorResult QFactorResult { get; set; }
         public IEnumerable<Maximum> Maximums { get; set; }
         public int MinimumPointValue => (int)Points.Min(p => p.Y);
-        public IEnumerable<Point> LorenzeCurve { get; set; }
 
         // DLA WIELU GOREK
         public IEnumerable<IEnumerable<Point>> GroupsOfPoints { get; set; }
