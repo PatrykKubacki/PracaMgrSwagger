@@ -128,6 +128,9 @@ namespace PracaMgrSwagger.FakeDater
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
 
+            result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
+            result.IsFitError = IsFitError(result.FitCurves);
+
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
             //{
@@ -138,6 +141,18 @@ namespace PracaMgrSwagger.FakeDater
             //    QFactorResult = qFactorResult,
             //};
             return result;
+        }
+
+        static bool IsFitError(IEnumerable<IEnumerable<Point>> fitCurves)
+        {
+            foreach (var fitCurve in fitCurves)
+            {
+                double max = fitCurve.Max(x => Math.Abs(x.Y));
+                if (max > 1)
+                    return true;
+            }
+
+            return false;
         }
 
         static IEnumerable<QFactorResult> GetQFactorResults(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> points)
@@ -206,6 +221,31 @@ namespace PracaMgrSwagger.FakeDater
                     newMeasResultsList.addFreqPower(point.frequency, point.gain);
 
                 result.Add(newMeasResultsList);
+            }
+
+            return result;
+        }
+
+        static IEnumerable<IEnumerable<Point>> GetFitCurves(IEnumerable<Point> points, IEnumerable<IEnumerable<Point>> lorenzeCurves)
+        {
+            List<List<Point>> result = new();
+
+            foreach (var lorenzeCurve in lorenzeCurves)
+            {
+                List<Point> fitCurve = new();
+
+                foreach (var lorenzeCurvePoint in lorenzeCurve)
+                {
+                    Point point = points.FirstOrDefault(x => x.X == lorenzeCurvePoint.X);
+                    if (point == null)
+                        continue;
+
+                    var y = point.Y - lorenzeCurvePoint.Y;
+                    y = y < 0 ? y : (y  *  -1); 
+                    Point fitCurvePoint = new() { X = point.X, Y = y };
+                    fitCurve.Add(fitCurvePoint);
+                }
+                result.Add(fitCurve);
             }
 
             return result;

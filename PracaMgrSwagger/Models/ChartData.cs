@@ -21,6 +21,8 @@ namespace PracaMgrSwagger.Models
         public IEnumerable<QFactorResult> QFactorResults { get; set; }
         public IEnumerable<IEnumerable<Point>> LorenzeCurves { get; set; }
 
+        public IEnumerable<IEnumerable<Point>> FitCurves { get; set; }
+        public bool IsFitError { get; set; }
     }
 
     public class Maximum
