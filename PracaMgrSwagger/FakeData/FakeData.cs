@@ -128,9 +128,6 @@ namespace PracaMgrSwagger.FakeDater
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
             result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
-            result.IsFitError = IsFitError(result.FitCurves);
-
-
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
             //{
@@ -143,16 +140,10 @@ namespace PracaMgrSwagger.FakeDater
             return result;
         }
 
-        static bool IsFitError(IEnumerable<IEnumerable<Point>> fitCurves)
+        static bool IsFitError(IEnumerable<Point> fitCurve)
         {
-            foreach (var fitCurve in fitCurves)
-            {
-                double max = fitCurve.Max(x => Math.Abs(x.Y));
-                if (max > 1)
-                    return true;
-            }
-
-            return false;
+            double max = fitCurve.Max(x => Math.Abs(x.Y));
+            return max > 1 ? true : false;
         }
 
         static IEnumerable<QFactorResult> GetQFactorResults(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> points)
@@ -227,9 +218,9 @@ namespace PracaMgrSwagger.FakeDater
             return result;
         }
 
-        static IEnumerable<IEnumerable<Point>> GetFitCurves(IEnumerable<Point> points, IEnumerable<IEnumerable<Point>> lorenzeCurves)
+        static IEnumerable<FitCurve> GetFitCurves(IEnumerable<Point> points, IEnumerable<IEnumerable<Point>> lorenzeCurves)
         {
-            List<List<Point>> result = new();
+            List<FitCurve> result = new();
 
             foreach (var lorenzeCurve in lorenzeCurves)
             {
@@ -246,7 +237,9 @@ namespace PracaMgrSwagger.FakeDater
                     Point fitCurvePoint = new() { X = point.X, Y = y };
                     fitCurve.Add(fitCurvePoint);
                 }
-                result.Add(fitCurve);
+                var isFitError = IsFitError(fitCurve);
+                FitCurve fitCurveResult = new() { Points = fitCurve, IsFitError = isFitError };
+                result.Add(fitCurveResult);
             }
 
             return result;

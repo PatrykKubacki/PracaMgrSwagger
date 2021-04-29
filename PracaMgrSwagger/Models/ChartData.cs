@@ -16,13 +16,11 @@ namespace PracaMgrSwagger.Models
         public IEnumerable<Maximum> Maximums { get; set; }
         public int MinimumPointValue => (int)Points.Min(p => p.Y);
 
-        // DLA WIELU GOREK
         public IEnumerable<IEnumerable<Point>> GroupsOfPoints { get; set; }
         public IEnumerable<QFactorResult> QFactorResults { get; set; }
         public IEnumerable<IEnumerable<Point>> LorenzeCurves { get; set; }
 
-        public IEnumerable<IEnumerable<Point>> FitCurves { get; set; }
-        public bool IsFitError { get; set; }
+        public IEnumerable<FitCurve> FitCurves { get; set; }
     }
 
     public class Maximum
