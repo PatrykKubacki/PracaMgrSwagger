@@ -122,14 +122,14 @@ namespace PracaMgrSwagger.FakeDater
             //result.PointsOnScreen = points.Count();
             //result.Points = points;
             //result.QFactorResult = qFactorResult;
-            result.Maximums = FindMaximum.GetMaximumGroups(points);
 
-            result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
+            result.Maximums = FindMaximum.GetMaximumGroups(points);
+            result.GroupsOfPoints =  FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
-
             result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
             result.IsFitError = IsFitError(result.FitCurves);
+
 
             //result.Maximums = FindMaximum.GetMaximumGroups(points);
             //result = new ChartData()
@@ -159,10 +159,11 @@ namespace PracaMgrSwagger.FakeDater
         { 
             QFactorSettings qFactorSettings = new();
             List<QFactorResult> result = new();
+            List<QFactorResult> emptyResult = new() { new QFactorResult() };
 
             IEnumerable<MeasResultsList> measResultsLists = ConvertToMeasResultsLists(measResultsList, points);
             if (measResultsLists == null)
-                return result;
+                return emptyResult;
 
             foreach (var newMeasResultsList in measResultsLists)
             {
@@ -174,7 +175,7 @@ namespace PracaMgrSwagger.FakeDater
                 result.Add(qFactorResult);
             }
 
-            return result;
+            return result.Count > 0 ? result : emptyResult; 
         }
 
         static IEnumerable<IEnumerable<Point>> GetLorenzeCurves(IEnumerable<IEnumerable<Point>> groupOfPoints, IEnumerable<QFactorResult> qFactorResults)

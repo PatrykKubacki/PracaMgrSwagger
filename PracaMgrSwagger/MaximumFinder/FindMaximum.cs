@@ -41,7 +41,6 @@ namespace PracaMgrSwagger.MaximumFinder
                     templist = new List<Point>();
                 }
             }
-
             return result;
         }
 
@@ -83,7 +82,8 @@ namespace PracaMgrSwagger.MaximumFinder
                 if (maxPoint != null && maxPoint.Y > (_limitParameter+3))
                     result.Add(new Maximum {Frequency = maxPoint.X, Value = maxPoint.Y });
             }
-            return result;
+
+            return result.Count < 10 ? result : new List<Maximum>();
         }
 
         static public IEnumerable<IEnumerable<Point>> GetGroupOfMaximumsPoints(IEnumerable<Point> points, IEnumerable<Maximum> maximums)
@@ -92,7 +92,6 @@ namespace PracaMgrSwagger.MaximumFinder
             var pointsOverLimit = SplitPoint(points);
             if (!pointsOverLimit.Any())
                 return result;
-
 
             foreach (var maximum in maximums)
             {
