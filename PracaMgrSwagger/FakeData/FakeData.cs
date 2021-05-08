@@ -232,8 +232,7 @@ namespace PracaMgrSwagger.FakeDater
                     if (point == null)
                         continue;
 
-                    var y = point.Y - lorenzeCurvePoint.Y;
-                    y = y < 0 ? y : (y  *  -1); 
+                    var y = lorenzeCurvePoint.Y - point.Y;
                     Point fitCurvePoint = new() { X = point.X, Y = y };
                     fitCurve.Add(fitCurvePoint);
                 }
