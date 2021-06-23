@@ -132,8 +132,8 @@ namespace QFactorCalculator
         {
             var k = Math.Pow(10, qFactorResult.PeakTransmittance / 20);
 
-            var f0 = qFactorResult.CenterFrequency / 1_000_000;
-
+            //var f0 = qFactorResult.CenterFrequency / 1_000_000;
+            var f0 = qFactorResult.CenterFrequency;
             var z = Math.Pow((f / f0 - f0 / f), 2);
 
             var c = Math.Sqrt(1 + qFactorResult.Q_factor * qFactorResult.Q_factor * z);

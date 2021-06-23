@@ -27,8 +27,8 @@ namespace PracaMgrSwagger.Controllers
 
 
         [HttpGet("GetResonators")]
-        public IEnumerable<Resonator> GetResonators()
-            => new List<Resonator>();
+        public IEnumerable<Models.Resonator> GetResonators()
+            => new List<Models.Resonator>();
 
         [HttpPost("AddResonator")]
         public IActionResult AddResonator(string name, string path, string type) 

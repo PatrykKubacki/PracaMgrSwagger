@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QMeterProtocol;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QFactorCalculator
+namespace Shared
 {
     public class MeasResultsList
     {
@@ -21,6 +22,11 @@ namespace QFactorCalculator
         public void addFreqPower(double frequency, double power)
         {
             pointList.Add(new PointPair(frequency, power));
+        }
+
+        public void addDataPoint(MeasPacket mp)
+        {
+            pointList.Add(new PointPair(mp.Frequency, mp.Adc));
         }
 
 
@@ -129,10 +135,35 @@ namespace QFactorCalculator
         public IEnumerable<PointPair> GetPointsInRange(double start, double stop)
             => pointList.Where(x => x.frequency >= start && x.frequency <= stop);
 
+        public double MinimumFrequency {
+            get {
+                return pointList[0].frequency;
+            }
+        }
+
+        public double MaximumFrequency {
+            get {
+                return pointList[pointList.Count - 1].frequency;
+            }
+        }
+
+        public void makeFromPointListCopy(List<PointPair> pointPairList)
+        {
+            pointList.Clear();
+            for (int i = 0; i < pointPairList.Count; i++)
+            {
+                pointList.Add(pointPairList[i]);
+            }
+        }
+
         public List<PointPair> getPointList()
         {
             return pointList;
         }
+
+        public int Length => pointList.Count;
+
+        public PointPair this[int index] => pointList[index];
 
         public void clear()
         {
@@ -168,6 +199,26 @@ namespace QFactorCalculator
         public string DataType {
             get { return dataType; }
             set { dataType = value.Trim(); }
+        }
+
+        public PointPair getPeak()
+        {
+            if (pointList.Count == 0)
+            {
+                throw new InvalidOperationException("Empty list");
+            }
+            double maxGain = double.MinValue;
+            int idx = 0;
+            for (int i = 0; i < pointList.Count; i++)
+            {
+                PointPair pp = pointList[i];
+                if (pp.gain > maxGain)
+                {
+                    maxGain = pp.gain;
+                    idx = i;
+                }
+            }
+            return pointList[idx];
         }
 
         public void saveToCSV(string filename)

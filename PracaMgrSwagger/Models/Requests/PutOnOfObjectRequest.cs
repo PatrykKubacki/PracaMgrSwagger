@@ -7,7 +7,6 @@ namespace PracaMgrSwagger.Models.Requests
 {
     public class PutOnOfObjectRequest
     {
-        public string connectionId { get; set; }
         public bool IsObjectInside { get; set; }
     }
 }

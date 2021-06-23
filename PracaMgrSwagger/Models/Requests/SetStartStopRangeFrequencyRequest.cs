@@ -7,7 +7,6 @@ namespace PracaMgrSwagger.Models.Requests
 {
     public class SetStartStopRangeFrequencyRequest
     {
-        public string connectionId { get; set; }
         public string start { get; set; }
         public string stop { get; set; }
     }

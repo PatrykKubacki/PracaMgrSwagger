@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QFactorCalculator
+namespace Shared
 {
     class SimpleS2pReader
     {
@@ -15,8 +14,7 @@ namespace QFactorCalculator
         {
             double frequency;
             double sparam;
-            var random = new Random();
-
+            
             Console.WriteLine("Reading file: " + filename);
 
             string[] lines = System.IO.File.ReadAllLines(filename);
@@ -26,9 +24,9 @@ namespace QFactorCalculator
                 if (line[0] == '!' || line[0] == '#')     // skip comments, do not recognize format (TODO: recognize file format)
                     continue;
                 string[] values = line.Split(' ');
-                double.TryParse(values[0].Replace(".", ","), out frequency);
-                sparam = double.Parse(values[3], CultureInfo.InvariantCulture);
-                s21module.Add(new PointPair(frequency, (20 * Math.Log10(sparam)) + random.NextDouble()));
+                double.TryParse(values[0], out frequency);
+                double.TryParse(values[3], out sparam);
+                s21module.Add(new PointPair(frequency, 20 * Math.Log10(sparam)));
             }
             Console.WriteLine("Number of datapoints: " + s21module.Count.ToString());
         }

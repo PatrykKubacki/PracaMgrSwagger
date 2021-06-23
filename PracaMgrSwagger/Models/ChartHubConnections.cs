@@ -7,78 +7,53 @@ namespace PracaMgrSwagger.Models
 {
     public class ChartHubConnections
     {
-        public Dictionary<string, ChartHubParameters> Connections { get; set; }
+        public ChartHubParameters Connection { get; set; }
 
         public ChartHubConnections()
         {
-            Connections = new Dictionary<string, ChartHubParameters>();
+            Connection = new ChartHubParameters();
         }
 
-        public void SetStartFrequency (string connectionId, double value)
+        public void SetStartFrequency (double value)
         {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                    Connections[connectionId].StartFrequency = value;
-                else
-                    Connections.Add(connectionId, new ChartHubParameters { StartFrequency = value });
+            if (Connection != null)
+                Connection.StartFrequency = value;
         }
 
-        public void SetStopFrequency(string connectionId, double value)
+        public void SetStopFrequency(double value)
         {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                    Connections[connectionId].StopFrequency = value;
-                else
-                    Connections.Add(connectionId, new ChartHubParameters { StopFrequency = value });
+            if (Connection != null)
+                Connection.StopFrequency = value;
         }
 
-        public void SetStartStopFrequency(string connectionId, double start, double stop)
+        public void SetStartStopFrequency(double start, double stop)
         {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                {
-                    Connections[connectionId].StartFrequency = Math.Round(start);
-                    Connections[connectionId].StopFrequency = Math.Round(stop);
-                    Connections[connectionId].PointsOnScreen = 0;
-                }
-            else
-                Connections.Add(connectionId, new ChartHubParameters { StartFrequency = start, StopFrequency = stop });
+            if (Connection != null)
+            {
+                Connection.StartFrequency = Math.Round(start);
+                Connection.StopFrequency = Math.Round(stop);
+                Connection.PointsOnScreen = 0;
+            }
         }
 
-        public void SetPointsOnScreen(string connectionId, int value)
+        public void SetPointsOnScreen(int value)
         {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                    Connections[connectionId].PointsOnScreen = value;
-                else
-                    Connections.Add(connectionId, new ChartHubParameters { PointsOnScreen = value });
+            if (Connection != null)
+                Connection.PointsOnScreen = value;
         }
 
-        public void SetChartHubConnection(string connectionId)
+        public void SetIsObjectInside(bool value)
         {
-            if (Connections != null &&
-                (!Connections.Any() || Connections.Any(x => x.Key != connectionId)) )
-                Connections.Add(connectionId, new ChartHubParameters());
+            if (Connection != null)
+                Connection.IsObjectInside = value;
         }
 
-        public void SetIsObjectInside(string connectionId, bool value)
+        public void UnZoomFull()
         {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                    Connections[connectionId].IsObjectInside = value;
-                else
-                    Connections.Add(connectionId, new ChartHubParameters { IsObjectInside = value });
-        }
-
-        public void UnZoomFull(string connectionId)
-        {
-            if (Connections != null)
-                if (Connections.Any(x => x.Key == connectionId))
-                {
-                    Connections[connectionId].StartFrequency = 0;
-                    Connections[connectionId].StopFrequency = 0;
-                    Connections[connectionId].PointsOnScreen = 0;
-                }
+            if (Connection != null)
+                Connection.StartFrequency = 0;
+                Connection.StopFrequency = 0;
+                Connection.PointsOnScreen = 0;
         }
     }
 

@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Converter\Converter.csproj" />
-    <ProjectReference Include="..\QFactorCalculator\QFactorCalculator.csproj" />
+    <ProjectReference Include="..\Shared\QMeter.Core.csproj" />
   </ItemGroup>
 
 

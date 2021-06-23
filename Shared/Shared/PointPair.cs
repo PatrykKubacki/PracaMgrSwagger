@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace QFactorCalculator
+namespace Shared
 {
     public class PointPair
     {
         public double frequency;
         public double gain;
+
 
         public PointPair()
         {
@@ -21,6 +23,7 @@ namespace QFactorCalculator
             this.gain = y;
         }
     }
+
 
     public class PointPairInt
     {
@@ -40,12 +43,14 @@ namespace QFactorCalculator
             this.i1 = int.MaxValue;
         }
 
-        public int I0 {
+        public int I0
+        {
             get { return i0; }
             set { i0 = value; }
         }
 
-        public int I1 {
+        public int I1
+        {
             get { return i1; }
             set { i1 = value; }
         }

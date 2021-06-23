@@ -84,26 +84,39 @@ namespace PracaMgrSwagger
 
                 var serviceProvider = app.ApplicationServices;
                 var chartHub = (IHubContext<ChartHub>)serviceProvider.GetService(typeof(IHubContext<ChartHub>));
+                var chartHubConnections = (ChartHubConnections)serviceProvider.GetService(typeof(ChartHubConnections));
 
-                var timer = new System.Timers.Timer
-                {
-                    Interval = 500, 
-                    Enabled = true
-                };
-                timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e) {
-                    var chartHubConnections = (ChartHubConnections)serviceProvider.GetService(typeof(ChartHubConnections));
-                    var dataSourceFromFiles = (DataSourceFromFiles)serviceProvider.GetService(typeof(DataSourceFromFiles));
+                QMeterProtocol.QMeterProtocol qMeterProtocol = new(chartHub, chartHubConnections);
+                qMeterProtocol.Run();
 
-                    foreach (var conn in chartHubConnections.Connections)
-                    {
-                        //var chart = FakeData.GetChartData(conn.Value);
-                         var chart = FakeDatas.GetChartDataFromS2PFile(dataSourceFromFiles, conn.Value);
-                        chartHub.Clients.Client(conn.Key).SendAsync("SendChart", chart);
-                    }
+           // var timer = new System.Timers.Timer
+          //  {
+           //     Interval = 500,
+           //     Enabled = true
+            //};
+            //timer.Elapsed += delegate (object sender, System.Timers.ElapsedEventArgs e)
+           // {
+              //  var chartHubConnections = (ChartHubConnections)serviceProvider.GetService(typeof(ChartHubConnections));
+              //  var dataSourceFromFiles = (DataSourceFromFiles)serviceProvider.GetService(typeof(DataSourceFromFiles));
 
-                    //chartHub.Clients.All.SendAsync("SendChart", chart);
-                };
-                timer.Start();
+                //    foreach (var conn in chartHubConnections.Connections)
+                //    {
+                //        //v1.0
+                       //var chart = FakeDatas.GetChartData(chartHubConnections.Connection);
+
+                //v2.0
+                //var chart = FakeDatas.GetChartDataFromS2PFile(dataSourceFromFiles, chartHubConnections.Connection);
+
+                //        //v3.0
+                //        QMeterProtocol.QMeterProtocol qMeterProtocol = new(chartHub);
+                //        qMeterProtocol.Run();
+
+                //        chartHub.Clients.Client(conn.Key).SendAsync("SendChart", qMeterProtocol.ChartData);
+                //    }
+
+                   // chartHub.Clients.All.SendAsync("SendChart", chart);
+               // };
+                //timer.Start();
             });
         }
 

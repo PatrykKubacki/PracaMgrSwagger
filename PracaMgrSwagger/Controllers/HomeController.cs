@@ -44,16 +44,7 @@ namespace PracaMgrSwagger.Controllers
         public IActionResult UnZoomFull([FromBody] UnZoomFullRequest request)
         {
             if (_chartHubConnections != null)
-                _chartHubConnections.UnZoomFull(request.connectionId);
-
-            return Ok();
-        }
-
-        [HttpPost("SetChartHubConnection")]
-        public IActionResult SetChartHubConnection([FromBody] SetChartHubConnectionRequest request)
-        {
-            if (_chartHubConnections != null)
-                _chartHubConnections.SetChartHubConnection(request.connectionId);
+                _chartHubConnections.UnZoomFull();
 
             return Ok();
         }
@@ -61,8 +52,8 @@ namespace PracaMgrSwagger.Controllers
         [HttpPost("SetStartFrequency")]
         public IActionResult SetStartFrequency([FromBody] SetStartFrequencyRequest request)
         {
-            if(_chartHubConnections != null && double.TryParse(request.value, out double value))
-                _chartHubConnections.SetStartFrequency(request.connectionId, value);
+            if(_chartHubConnections != null && double.TryParse(request.value.Replace('.', ','), out double value))
+                _chartHubConnections.SetStartFrequency(value);
 
             return Ok();
         }
@@ -70,8 +61,8 @@ namespace PracaMgrSwagger.Controllers
         [HttpPost("SetStopFrequency")]
         public IActionResult SetStopFrequency([FromBody] SetStopFrequencyRequest request)
         {
-            if (_chartHubConnections != null && double.TryParse(request.value, out double value))
-                _chartHubConnections.SetStopFrequency(request.connectionId, value);
+            if (_chartHubConnections != null && double.TryParse(request.value.Replace('.', ','), out double value))
+                _chartHubConnections.SetStopFrequency(value);
 
             return Ok();
         }
@@ -79,8 +70,8 @@ namespace PracaMgrSwagger.Controllers
         [HttpPost("SetPointsOnScreen")]
         public IActionResult SetPointsOnScreen([FromBody] SetPointsOnScreenRequest request)
         {
-            if (_chartHubConnections != null && int.TryParse(request.value, out int value))
-                _chartHubConnections.SetPointsOnScreen(request.connectionId, value);
+            if (_chartHubConnections != null && int.TryParse(request.value.Replace('.', ','), out int value))
+                _chartHubConnections.SetPointsOnScreen(value);
 
             return Ok();
         }
@@ -88,8 +79,10 @@ namespace PracaMgrSwagger.Controllers
         [HttpPost("SetStartStopRangeFrequency")]
         public IActionResult SetStartStopRangeFrequency([FromBody] SetStartStopRangeFrequencyRequest request)
         {
-            if (_chartHubConnections != null && double.TryParse(request.start, out double start) && double.TryParse(request.stop, out double stop))
-                _chartHubConnections.SetStartStopFrequency(request.connectionId, start, stop);
+            if (_chartHubConnections != null &&
+                double.TryParse(request.start.Replace('.', ','), out double start) &&
+                double.TryParse(request.stop.Replace('.', ','), out double stop))
+                    _chartHubConnections.SetStartStopFrequency(start, stop);
 
             return Ok();
         }
@@ -98,7 +91,7 @@ namespace PracaMgrSwagger.Controllers
         public IActionResult PutOnOfObject([FromBody] PutOnOfObjectRequest request)
         {
             if (_chartHubConnections != null)
-                _chartHubConnections.SetIsObjectInside(request.connectionId, request.IsObjectInside);
+                _chartHubConnections.SetIsObjectInside(request.IsObjectInside);
 
             return Ok();
         }

@@ -7,6 +7,5 @@ namespace PracaMgrSwagger.Models.Requests
 {
     public class UnZoomFullRequest
     {
-        public string connectionId { get; set; }
     }
 }
