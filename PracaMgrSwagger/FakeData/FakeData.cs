@@ -1,5 +1,5 @@
 ﻿using PracaMgrSwagger.FakeData;
-using PracaMgrSwagger.MaximumFinder;
+using PracaMgrSwagger.Helpers;
 using PracaMgrSwagger.Models;
 using QFactorCalculator;
 using Shared;
@@ -124,8 +124,8 @@ namespace PracaMgrSwagger.FakeDater
             //result.Points = points;
             //result.QFactorResult = qFactorResult;
 
-            result.Maximums = FindMaximum.GetMaximumGroups(points);
-            result.GroupsOfPoints =  FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
+            result.Maximums = MaximumHelper.GetMaximumGroups(points);
+            result.GroupsOfPoints =  MaximumHelper.GetGroupOfMaximumsPoints(points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
             result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
@@ -191,7 +191,7 @@ namespace PracaMgrSwagger.FakeDater
                 IEnumerable<Point> points = groupOfPoints.ToArray()[i];
                 QFactorResult qFactorResult = qFactorResults.ToArray()[i];
 
-                List<Point> lorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult).ToList();
+                List<Point> lorenzeCurve = LorenzeCurveHelper.GetLorenzeCureve(points, qFactorResult).ToList();
 
                 result.Add(lorenzeCurve);
             }

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PracaMgrSwagger.MaximumFinder
+namespace PracaMgrSwagger.Helpers
 {
-    static public class FindMaximum
+    static public class MaximumHelper
     {
         static readonly int _limitParameter = -75;
 
@@ -41,35 +41,6 @@ namespace PracaMgrSwagger.MaximumFinder
                     templist = new List<Point>();
                 }
             }
-            return result;
-        }
-
-
-        static public List<Point> GetLorenzeCureve(IEnumerable<Point> points, QFactorResult qFactorResult)
-        {
-            var result = new List<Point>();
-            foreach (var point in points)
-            {
-                var y = QFactorCalculator.QFactorCalculator.CalcLorenzeCurve(
-                    point.Y,
-                    point.X,
-                    qFactorResult);
-
-                result.Add(new Point { X = point.X, Y = y });
-            };
-
-            result = FilterLorenzeCurve(result);
-
-            return result;
-        }
-
-        static List<Point> FilterLorenzeCurve(IEnumerable<Point> points)
-        {
-            var max = points.Max();
-            var result = points.SkipWhile(x => x.X <= (max.X - 10))
-                               .TakeWhile(x => x.X <= (max.X + 10))
-                               .ToList();
-
             return result;
         }
 

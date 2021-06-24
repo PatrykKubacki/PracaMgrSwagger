@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using PracaMgrSwagger.Helpers;
 using PracaMgrSwagger.Hubs;
-using PracaMgrSwagger.MaximumFinder;
 using PracaMgrSwagger.Models;
 using QFactorCalculator;
 using QMeterProtocol;
@@ -99,10 +99,10 @@ namespace PracaMgrSwagger.QMeterProtocol
             //result.PointsOnScreen = measResultsList.Count;
             //result.StartFrequency = Math.Round(points.First().X, 2);
             //result.StopFrequency = Math.Round(points.Last().X, 2);
-            result.Maximums = FindMaximum.GetMaximumGroups(result.Points);
-            result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(result.Points, result.Maximums);
+            result.Maximums = MaximumHelper.GetMaximumGroups(result.Points);
+            result.GroupsOfPoints = MaximumHelper.GetGroupOfMaximumsPoints(result.Points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
-            //result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
+            result.LorenzeCurves = LorenzeCurveHelper.GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
             //result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
 
             //result.QFactorResults = new List<QFactorResult>() { CalcualteQFactor(measResultsList) };
@@ -141,35 +141,6 @@ namespace PracaMgrSwagger.QMeterProtocol
             }
 
             return result.Count > 0 ? result : emptyResult;
-        }
-
-        IEnumerable<IEnumerable<Point>> GetLorenzeCurves(IEnumerable<IEnumerable<Point>> groupOfPoints, IEnumerable<QFactorResult> qFactorResults)
-        {
-            List<List<Point>> result = new();
-
-            if (!groupOfPoints.Any() || !qFactorResults.Any())
-                return result;
-
-            int countGroupOfPoints = groupOfPoints.Count();
-            int countQFactorResults = qFactorResults.Count();
-            var countOfLorenze = countGroupOfPoints == countQFactorResults
-                ? countGroupOfPoints
-                : countQFactorResults;
-
-            if (countOfLorenze > 10)
-                return result;
-
-            for (int i = 0; i <= (countOfLorenze - 1); i++)
-            {
-                IEnumerable<Point> points = groupOfPoints.ToArray()[i];
-                QFactorResult qFactorResult = qFactorResults.ToArray()[i];
-
-                List<Point> lorenzeCurve = FindMaximum.GetLorenzeCureve(points, qFactorResult).ToList();
-
-                result.Add(lorenzeCurve);
-            }
-
-            return result;
         }
 
         IEnumerable<MeasResultsList> ConvertToMeasResultsLists(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> groupOfPoints)
