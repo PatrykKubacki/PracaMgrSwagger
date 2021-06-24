@@ -18,6 +18,12 @@ namespace PracaMgrSwagger
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddConsole();
+                    logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Debug);
+                    logging.AddFilter("Microsoft.AspNetCore.Http.Connections", LogLevel.Debug);
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

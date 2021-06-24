@@ -41,6 +41,7 @@ namespace PracaMgrSwagger.QMeterProtocol
         {
             while (true)
             {
+                Thread.Sleep(300);
                 try
                 {
                     if (_ph.HardwareIsConnected)
@@ -92,15 +93,15 @@ namespace PracaMgrSwagger.QMeterProtocol
             var pointList = measResultsList.getPointList();
 
             result.Points = pointList.Select(point => new Point { X = point.frequency, Y = point.gain })
-                                         .ToList(); ;
+                                     .ToList();
 
             //result.Points = points;
             //result.PointsOnScreen = measResultsList.Count;
             //result.StartFrequency = Math.Round(points.First().X, 2);
             //result.StopFrequency = Math.Round(points.Last().X, 2);
-            //result.Maximums = FindMaximum.GetMaximumGroups(points);
-            //result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(points, result.Maximums);
-            //result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
+            result.Maximums = FindMaximum.GetMaximumGroups(result.Points);
+            result.GroupsOfPoints = FindMaximum.GetGroupOfMaximumsPoints(result.Points, result.Maximums);
+            result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             //result.LorenzeCurves = GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
             //result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
 
@@ -134,7 +135,9 @@ namespace PracaMgrSwagger.QMeterProtocol
 
                 var qFactorCalculator = new QFactorCalculator.QFactorCalculator(newMeasResultsList, qFactorSettings);
                 QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
-                result.Add(qFactorResult);
+
+                if(qFactorResult.Q_factor != 0 && qFactorResult.Bandwidth != 0 && qFactorResult.NumberOfPoints != 0)
+                    result.Add(qFactorResult);
             }
 
             return result.Count > 0 ? result : emptyResult;

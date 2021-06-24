@@ -102,10 +102,10 @@ namespace QFactorCalculator
 
         public override string ToString()
         {
-            string s = "\nCenter frequency: " + (CenterFrequency / 1e6).ToString() + " MHz\n" +
-                        "Q-Factor: " + Q_factor +
-                        "\nPeak transmittance: " + PeakTransmittance.ToString() + " dB\n" +
-                        "Bandwidth: " + (Bandwidth / 1e3).ToString() + " kHz";
+            string s = $"\nCenter frequency: {CenterFrequency / 1e6} MHz\n" +
+                       $"Q-Factor: {Q_factor}\n" +
+                       $"Peak transmittance: {PeakTransmittance} dB\n" +
+                       $"Bandwidth: {Bandwidth / 1e3} kHz";
             return s;
         }
     }

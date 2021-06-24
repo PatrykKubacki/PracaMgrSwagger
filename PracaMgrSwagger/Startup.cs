@@ -48,7 +48,8 @@ namespace PracaMgrSwagger
 
             services.AddSignalR(hubOptions => {
                 hubOptions.EnableDetailedErrors = true;
-            });
+            }).AddNewtonsoftJsonProtocol();
+
             services.AddSingleton<ChartHubConnections>();
             services.AddSingleton<DataSourceFromFiles>();
             services.AddMediatR(AssemblyInfo.Assembly);
