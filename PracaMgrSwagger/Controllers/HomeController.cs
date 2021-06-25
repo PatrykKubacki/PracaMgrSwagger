@@ -87,6 +87,19 @@ namespace PracaMgrSwagger.Controllers
             return Ok();
         }
 
+        [HttpPost("SetHubParameters")]
+        public IActionResult SetHubParameters([FromBody] SetHubParametersRequest request)
+        {
+            if (_chartHubConnections != null &&
+                double.TryParse(request.start.Replace('.', ','), out double start) &&
+                double.TryParse(request.stop.Replace('.', ','), out double stop) &&
+                int.TryParse(request.points, out int points)) 
+                _chartHubConnections.SetHubParameters(start, stop, points);
+
+            return Ok();
+        }
+
+
         [HttpPost("PutOnOfObject")]
         public IActionResult PutOnOfObject([FromBody] PutOnOfObjectRequest request)
         {

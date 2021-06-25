@@ -54,17 +54,17 @@ namespace PracaMgrSwagger.QMeterProtocol
                         }
                         else
                         {
-                            if (_chartHubConnections != null && _chartHubConnections.Connection != null)
+                            if (_chartHubConnections != null &&
+                                _chartHubConnections.Connection != null &&
+                                (_minFrequency != _chartHubConnections.Connection.StartFrequency || _maxFrequency != _chartHubConnections.Connection.StopFrequency))
                             {
-                                if (_minFrequency != _chartHubConnections.Connection.StartFrequency || _maxFrequency != _chartHubConnections.Connection.StopFrequency)
-                                {
-                                    _minFrequency = _chartHubConnections.Connection.StartFrequency;
-                                    _maxFrequency = _chartHubConnections.Connection.StopFrequency;
-                                    var start = Convert.ToInt32(_minFrequency) * 1000;
-                                    var stop = Convert.ToInt32(_maxFrequency) * 1000;
-
-                                    _ph.cmdSetScanRange(start, stop, 1000, ProtocolHandler.MeasType.mtS21, _oversampling, 0);
-                                }
+                                _minFrequency = _chartHubConnections.Connection.StartFrequency;
+                                _maxFrequency = _chartHubConnections.Connection.StopFrequency;
+                                var start = Convert.ToInt32(_minFrequency) * 1000;
+                                var stop = Convert.ToInt32(_maxFrequency) * 1000;
+                                start = start != 0 ? start : _ph.QMeterMinFrequency * 1000;
+                                stop = stop != 0 ? stop : _ph.QMeterMaxFrequency * 1000;
+                                _ph.cmdSetScanRange(start, stop, 8000, ProtocolHandler.MeasType.mtS21, _oversampling, 0);
                             }
                         }
                     } 
@@ -95,28 +95,27 @@ namespace PracaMgrSwagger.QMeterProtocol
             result.Points = pointList.Select(point => new Point { X = point.frequency, Y = point.gain })
                                      .ToList();
 
-            //result.Points = points;
-            //result.PointsOnScreen = measResultsList.Count;
-            //result.StartFrequency = Math.Round(points.First().X, 2);
-            //result.StopFrequency = Math.Round(points.Last().X, 2);
+            //result.PointsOnScreen = result.Points.Count();
+            //result.StartFrequency = Math.Round(result.Points.First().X, 2);
+            //result.StopFrequency = Math.Round(result.Points.Last().X, 2);
             result.Maximums = MaximumHelper.GetMaximumGroups(result.Points);
             result.GroupsOfPoints = MaximumHelper.GetGroupOfMaximumsPoints(result.Points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = LorenzeCurveHelper.GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
-            //result.FitCurves = GetFitCurves(points, result.LorenzeCurves);
+            //result.FitCurves = GetFitCurves(result.Points, result.LorenzeCurves);
 
             //result.QFactorResults = new List<QFactorResult>() { CalcualteQFactor(measResultsList) };
 
             return result;
         }
 
-        QFactorResult CalcualteQFactor(MeasResultsList measResultsList)
-        {
-            QFactorSettings qFactorSettings = new();
-            QFactorCalculator.QFactorCalculator qFactorCalculator = new (measResultsList, qFactorSettings);
-            QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
-            return qFactorResult;
-        }
+        //QFactorResult CalcualteQFactor(MeasResultsList measResultsList)
+        //{
+        //    QFactorSettings qFactorSettings = new();
+        //    QFactorCalculator.QFactorCalculator qFactorCalculator = new (measResultsList, qFactorSettings);
+        //    QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
+        //    return qFactorResult;
+        //}
 
         IEnumerable<QFactorResult> GetQFactorResults(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> points)
         {

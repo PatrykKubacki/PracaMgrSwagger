@@ -36,6 +36,16 @@ namespace PracaMgrSwagger.Models
             }
         }
 
+        public void SetHubParameters(double start, double stop, int points)
+        {
+            if (Connection != null)
+            {
+                Connection.StartFrequency = Math.Round(start);
+                Connection.StopFrequency = Math.Round(stop);
+                Connection.PointsOnScreen = points;
+            }
+        }
+
         public void SetPointsOnScreen(int value)
         {
             if (Connection != null)
