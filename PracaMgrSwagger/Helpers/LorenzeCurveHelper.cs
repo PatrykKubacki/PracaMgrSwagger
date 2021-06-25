@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PracaMgrSwagger.Helpers
 {
-    static public class LorenzeCurveHelper
+    public static class LorenzeCurveHelper
     {
         static public IEnumerable<IEnumerable<Point>> GetLorenzeCurves(IEnumerable<IEnumerable<Point>> groupOfPoints, IEnumerable<QFactorResult> qFactorResults)
         {

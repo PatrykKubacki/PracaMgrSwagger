@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PracaMgrSwagger.Helpers
 {
-    static public class MaximumHelper
+    public static class MaximumHelper
     {
         static readonly int _limitParameter = -75;
 

@@ -95,27 +95,16 @@ namespace PracaMgrSwagger.QMeterProtocol
             result.Points = pointList.Select(point => new Point { X = point.frequency, Y = point.gain })
                                      .ToList();
 
-            //result.PointsOnScreen = result.Points.Count();
-            //result.StartFrequency = Math.Round(result.Points.First().X, 2);
-            //result.StopFrequency = Math.Round(result.Points.Last().X, 2);
             result.Maximums = MaximumHelper.GetMaximumGroups(result.Points);
             result.GroupsOfPoints = MaximumHelper.GetGroupOfMaximumsPoints(result.Points, result.Maximums);
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = LorenzeCurveHelper.GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
-            //result.FitCurves = GetFitCurves(result.Points, result.LorenzeCurves);
+            result.FitCurves = FitErrorCurveHelper.GetFitCurves(result.Points, result.LorenzeCurves);
 
-            //result.QFactorResults = new List<QFactorResult>() { CalcualteQFactor(measResultsList) };
 
             return result;
         }
 
-        //QFactorResult CalcualteQFactor(MeasResultsList measResultsList)
-        //{
-        //    QFactorSettings qFactorSettings = new();
-        //    QFactorCalculator.QFactorCalculator qFactorCalculator = new (measResultsList, qFactorSettings);
-        //    QFactorResult qFactorResult = qFactorCalculator.calculateQFactor();
-        //    return qFactorResult;
-        //}
 
         IEnumerable<QFactorResult> GetQFactorResults(MeasResultsList measResultsList, IEnumerable<IEnumerable<Point>> points)
         {
@@ -161,37 +150,5 @@ namespace PracaMgrSwagger.QMeterProtocol
 
             return result;
         }
-
-        IEnumerable<FitCurve> GetFitCurves(IEnumerable<Point> points, IEnumerable<IEnumerable<Point>> lorenzeCurves)
-        {
-            List<FitCurve> result = new();
-
-            foreach (var lorenzeCurve in lorenzeCurves)
-            {
-                List<Point> fitCurve = new();
-
-                foreach (var lorenzeCurvePoint in lorenzeCurve)
-                {
-                    Point point = points.FirstOrDefault(x => x.X == lorenzeCurvePoint.X);
-                    if (point == null)
-                        continue;
-
-                    var y = lorenzeCurvePoint.Y - point.Y;
-                    Point fitCurvePoint = new() { X = point.X, Y = y };
-                    fitCurve.Add(fitCurvePoint);
-                }
-                var isFitError = IsFitError(fitCurve);
-                FitCurve fitCurveResult = new() { Points = fitCurve, IsFitError = isFitError };
-                result.Add(fitCurveResult);
-            }
-
-            return result;
-        }
-        bool IsFitError(IEnumerable<Point> fitCurve)
-        {
-            double max = fitCurve.Max(x => Math.Abs(x.Y));
-            return max > 1 ? true : false;
-        }
-
     }
 }
