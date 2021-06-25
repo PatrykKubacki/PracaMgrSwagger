@@ -29,7 +29,7 @@ namespace PracaMgrSwagger.QMeterProtocol
 
         public QMeterProtocol(IHubContext<ChartHub> hub, ChartHubConnections connections)
         {
-            ChartData = new ChartData() { QFactorResult = new QFactorResult() };
+            ChartData = new ChartData();
             _chartHub = hub;
             _chartHubConnections = connections;
             _measManager = new MeasManager();

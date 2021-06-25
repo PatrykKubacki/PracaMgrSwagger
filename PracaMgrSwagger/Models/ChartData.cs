@@ -12,10 +12,9 @@ namespace PracaMgrSwagger.Models
         //public double StartFrequency { get; set; }
         //public double StopFrequency { get; set; }
         //public int PointsOnScreen { get; set; }
-        public QFactorResult QFactorResult { get; set; }
+        //public QFactorResult QFactorResult { get; set; }
         public IEnumerable<Maximum> Maximums { get; set; }
-        //public int MinimumPointValue => (int)Points.Min(p => p.Y);
-
+        public int MinimumPointValue => Points.Count() > 1 ? (int)Points.Min(p => p.Y) : 0;
         public IEnumerable<IEnumerable<Point>> GroupsOfPoints { get; set; }
         public IEnumerable<QFactorResult> QFactorResults { get; set; }
         public IEnumerable<IEnumerable<Point>> LorenzeCurves { get; set; }

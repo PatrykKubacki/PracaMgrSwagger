@@ -104,7 +104,7 @@ namespace PracaMgrSwagger.FakeDater
                     //StartFrequency = startFrequency,
                     //StopFrequency = stopFrequency,
                     Points = points,
-                    QFactorResult = qFactorResult,
+                    //QFactorResult = qFactorResult,
                     //PointsOnScreen = pointsOnScreen,
                 };
             }
@@ -116,7 +116,7 @@ namespace PracaMgrSwagger.FakeDater
                     Points = points,
                     //StartFrequency = Math.Round(points.First().X, 2),
                     //StopFrequency = Math.Round(points.Last().X, 2),
-                    QFactorResult = qFactorResult,
+                    //QFactorResult = qFactorResult,
                 };
             }
 
