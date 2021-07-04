@@ -9,6 +9,7 @@ using Converter.Queries.GetResultFromFile.Results;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PracaMgrSwagger.Commands;
 using PracaMgrSwagger.Models;
 using PracaMgrSwagger.Models.Requests;
 using FakeDatas = PracaMgrSwagger.FakeDater.FakeData;
@@ -32,13 +33,6 @@ namespace PracaMgrSwagger.Controllers
         public ApplicationData Initialize() 
             => new ApplicationData();
 
-        [HttpGet("GetEmptyResonator")]
-        public ResonatorParameters GetEmptyResonator() 
-            => FakeDatas.GetFakeEmptyResonator();
-
-        [HttpGet("GetMeasureResult")]
-        public MeasureResult GetMeasureResult()
-            => new MeasureResult();
 
         [HttpPost("UnZoomFull")]
         public IActionResult UnZoomFull([FromBody] UnZoomFullRequest request)
@@ -109,6 +103,40 @@ namespace PracaMgrSwagger.Controllers
             return Ok();
         }
 
+        [HttpPost("SaveMeasurements")]
+        public async Task<IEnumerable<string>> SaveMeasurements([FromBody] SaveMeasurmentsRequest request)
+        {
+            var saveMeasurementsCommand = new SaveMeasurementsCommand
+            {
+                SessionName = request.SessionName,
+                Measurements = request.Measurements
+            };
+
+            await _mediator.Send(saveMeasurementsCommand);
+
+            var getSavedMeasurementsFilesList = new GetSavedMeasurementsFilesListCommand();
+            var savedMeasurementsFilesList = await _mediator.Send(getSavedMeasurementsFilesList);
+
+            return savedMeasurementsFilesList;
+        }
+
+        [HttpGet("GetSavedMeasurementsFilesList")]
+        public async Task<IEnumerable<string>> GetSavedMeasurementsFilesList()
+        {
+            var getSavedMeasurementsFilesList = new GetSavedMeasurementsFilesListCommand();
+            var savedMeasurementsFilesList = await _mediator.Send(getSavedMeasurementsFilesList);
+
+            return savedMeasurementsFilesList;
+        }
+
+        [HttpPost("GetSavedMeasurementsSession")]
+        public async Task<IEnumerable<MeasureResult>> GetSavedMeasurementsSession([FromBody] GetSavedMeasurmentsSessionRequest request)
+        {
+            GetSavedMeasurementsSessionCommand getSavedMeasurementsSessionCommand = new () { SessionName = request.SessionName };
+            var savedSession = await _mediator.Send(getSavedMeasurementsSessionCommand);
+
+            return savedSession;
+        }
 
         [HttpPost("GetConverterResult")]
         public async Task<IResultFromFile> GetConverterResult([FromBody] GetConverterResultRequest request)

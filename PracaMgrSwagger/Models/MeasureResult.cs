@@ -7,16 +7,17 @@ namespace PracaMgrSwagger.Models
 {
     public class MeasureResult
     {
-        public double QFactor { get; set; }
-        public double CenterFrequencyDifference { get; set; }
-        public double CenterFrequency { get; set; }
-        public double Bandwidth3dB { get; set; }
-        public double PeakTransmittance { get; set; }
-        public double SizeH { get; set; }
-        public double Permittivity { get; set; }
-        public double DielLossTangent { get; set; }
-        public double Resistivity { get; set; }
-        public double SheetResistance { get; set; }
-        public int NumberOrPoints { get; set; }
+        public string SampleName { get; set; }
+        public string H { get; set; }
+        public string Permittivity { get; set; }
+        public string DielLossTangent { get; set; }
+        public string Resistivity { get; set; }
+        public string SheetResistance { get; set; }
+        public double Q { get; set; }
+        public double FrequencyDifference { get; set; }
+        public double F0 { get; set; }
+        public double Bw { get; set; }
+        public double Peak { get; set; }
+        public int Points { get; set; }
     }
 }

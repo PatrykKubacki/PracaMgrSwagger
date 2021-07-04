@@ -16,14 +16,6 @@ namespace PracaMgrSwagger.FakeDater
     {
         //DataSourceFromFiles _dataSourceFromFiles { get; set; }
 
-        public static ResonatorParameters GetFakeEmptyResonator()
-        {
-            var random = new Random();
-            var qFactor = random.Next(9500, 9600);
-            var centerFrequency = random.Next(5123, 5200);
-            var peakTransmittance = random.Next(-40, -33);
-            return new ResonatorParameters(qFactor, centerFrequency, peakTransmittance);
-        }
 
         public static ChartData GetFakeChartData()
         {

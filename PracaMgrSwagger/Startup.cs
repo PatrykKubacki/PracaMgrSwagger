@@ -52,6 +52,7 @@ namespace PracaMgrSwagger
 
             services.AddSingleton<ChartHubConnections>();
             services.AddSingleton<DataSourceFromFiles>();
+            services.AddMediatR(Converter.AssemblyInfo.Assembly);
             services.AddMediatR(AssemblyInfo.Assembly);
         }
 
