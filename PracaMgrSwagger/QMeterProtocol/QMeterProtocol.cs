@@ -72,7 +72,8 @@ namespace PracaMgrSwagger.QMeterProtocol
                     _mrl = _measManager.getActualMeasResultsList();
                     if (_mrl != null)
                     {
-                        ChartData = ConvertDeviceDataToResultChartData(_mrl);
+                        var measuredPointsPerSecond = _measManager.LastMeasRate;
+                        ChartData = ConvertDeviceDataToResultChartData(_mrl, measuredPointsPerSecond);
                         NotifyChange();
                     }
                 }
@@ -87,7 +88,7 @@ namespace PracaMgrSwagger.QMeterProtocol
             => _chartHub.Clients.All.SendAsync("SendChart", ChartData);
             
 
-        ChartData ConvertDeviceDataToResultChartData(MeasResultsList measResultsList)
+        ChartData ConvertDeviceDataToResultChartData(MeasResultsList measResultsList, int measuredPointsPerSecond)
         {
             ChartData result = new();
             var pointList = measResultsList.getPointList();
@@ -100,7 +101,7 @@ namespace PracaMgrSwagger.QMeterProtocol
             result.QFactorResults = GetQFactorResults(measResultsList, result.GroupsOfPoints);
             result.LorenzeCurves = LorenzeCurveHelper.GetLorenzeCurves(result.GroupsOfPoints, result.QFactorResults);
             result.FitCurves = FitErrorCurveHelper.GetFitCurves(result.Points, result.LorenzeCurves);
-
+            result.MeasuredPointsPerSecond = measuredPointsPerSecond;
 
             return result;
         }
